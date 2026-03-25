@@ -1,0 +1,42 @@
+{
+  "name": "@onepass/vault-core",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Core encryption, database, and sync logic for OnePass",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "sql.js": "^1.10.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.24",
+    "@types/sql.js": "^1.4.10",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.3.3"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "password-manager",
+    "encryption",
+    "sqlite"
+  ],
+  "license": "MIT"
+}
