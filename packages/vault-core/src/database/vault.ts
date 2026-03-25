@@ -196,10 +196,13 @@ export class VaultService {
     );
   }
 
-  async getEntries(): Promise<Entry[]> {
+  async getEntries(options?: { includeDeleted?: boolean }): Promise<Entry[]> {
     if (!this.db) throw new Error('Database not open');
 
-    const result = this.db.exec('SELECT * FROM entries WHERE deleted_at IS NULL');
+    const sql = options?.includeDeleted
+      ? 'SELECT * FROM entries'
+      : 'SELECT * FROM entries WHERE deleted_at IS NULL';
+    const result = this.db.exec(sql);
     return parseRows(result, rowToEntry);
   }
 
@@ -242,10 +245,13 @@ export class VaultService {
     );
   }
 
-  async getCategories(): Promise<Category[]> {
+  async getCategories(options?: { includeDeleted?: boolean }): Promise<Category[]> {
     if (!this.db) throw new Error('Database not open');
 
-    const result = this.db.exec('SELECT * FROM categories WHERE deleted_at IS NULL');
+    const sql = options?.includeDeleted
+      ? 'SELECT * FROM categories'
+      : 'SELECT * FROM categories WHERE deleted_at IS NULL';
+    const result = this.db.exec(sql);
     const categories = parseRows(result, rowToCategory);
 
     if (categories.length === 0) return [createDefaultCategory()];

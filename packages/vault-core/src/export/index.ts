@@ -5,7 +5,7 @@ import {
   splitCiphertextAndTag,
 } from './crypto.js';
 import type { Entry, Category } from '../models/index.js';
-import type { SyncPayload } from '../sync/protocol.js';
+import { serializeSyncPayload, deserializeSyncPayload } from '../sync/protocol.js';
 
 const EXPORT_VERSION = 1;
 
@@ -22,8 +22,8 @@ export async function exportVault(
   key: Buffer,
   salt: Buffer
 ): Promise<Buffer> {
-  const payload: SyncPayload = { entries, categories };
-  const plaintext = Buffer.from(JSON.stringify(payload), 'utf-8');
+  const payload = { entries, categories };
+  const plaintext = Buffer.from(serializeSyncPayload(payload), 'utf-8');
 
   const { ciphertext, iv, tag } = encryptExport(plaintext, key);
   const combinedData = combineCiphertextAndTag(ciphertext, tag);
@@ -54,7 +54,7 @@ export async function importVault(
 
   const { ciphertext, tag } = splitCiphertextAndTag(data);
   const plaintext = decryptExport(ciphertext, key, iv, tag);
-  const payload: SyncPayload = JSON.parse(plaintext.toString('utf-8'));
+  const payload = deserializeSyncPayload(plaintext.toString('utf-8'));
 
   return {
     entries: payload.entries,
