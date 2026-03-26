@@ -14,7 +14,7 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "typeRoots": ["./node_modules/@types"]
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   },
   "include": ["src/**/*", "index.js", "App.tsx", "__tests__/**/*"],
   "exclude": ["node_modules", "android", "ios", "macos"]

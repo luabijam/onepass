@@ -12,3 +12,9 @@ export type {EntryListPanelProps, Entry} from './EntryListPanel';
 
 export {EntryDetailPanel} from './EntryDetailPanel';
 export type {EntryDetailPanelProps} from './EntryDetailPanel';
+
+export {KeyboardShortcutManager} from './KeyboardShortcutManager';
+export type {
+  KeyboardShortcutManagerProps,
+  KeyboardShortcut,
+} from './KeyboardShortcutManager';
