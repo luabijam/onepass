@@ -89,6 +89,42 @@ describe('SyncServer', () => {
 
       expect(response.status).toBe(200);
     });
+
+    it('rejects requests with malformed authorization header (missing Bearer)', async () => {
+      const response = await request(server)
+        .get('/sync')
+        .set('Authorization', validToken);
+
+      expect(response.status).toBe(401);
+      expect(response.body).toEqual({error: 'Invalid token'});
+    });
+
+    it('rejects requests with wrong auth scheme', async () => {
+      const response = await request(server)
+        .get('/sync')
+        .set('Authorization', `Basic ${validToken}`);
+
+      expect(response.status).toBe(401);
+      expect(response.body).toEqual({error: 'Invalid token'});
+    });
+
+    it('rejects requests with empty token', async () => {
+      const response = await request(server)
+        .get('/sync')
+        .set('Authorization', 'Bearer ');
+
+      expect(response.status).toBe(401);
+      expect(response.body).toEqual({error: 'Invalid token'});
+    });
+
+    it('applies authentication to POST /sync endpoint', async () => {
+      const response = await request(server)
+        .post('/sync')
+        .send({entries: [], categories: []});
+
+      expect(response.status).toBe(401);
+      expect(response.body).toEqual({error: 'Missing authorization token'});
+    });
   });
 
   describe('GET /sync', () => {
