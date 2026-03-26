@@ -95,6 +95,16 @@ describe('KeychainService', () => {
 
       expect(result).toBe(false);
     });
+
+    it('returns false on error', async () => {
+      (keytar.getPassword as jest.Mock).mockRejectedValueOnce(
+        new Error('Keychain error'),
+      );
+
+      const result = await keychainService.hasPassword('masterPassword');
+
+      expect(result).toBe(false);
+    });
   });
 
   describe('deletePassword', () => {
@@ -204,6 +214,16 @@ describe('KeychainService', () => {
 
     it('returns false when no token stored', async () => {
       (keytar.getPassword as jest.Mock).mockResolvedValueOnce(null);
+
+      const result = await keychainService.hasToken('syncToken');
+
+      expect(result).toBe(false);
+    });
+
+    it('returns false on error', async () => {
+      (keytar.getPassword as jest.Mock).mockRejectedValueOnce(
+        new Error('Keychain error'),
+      );
 
       const result = await keychainService.hasToken('syncToken');
 
