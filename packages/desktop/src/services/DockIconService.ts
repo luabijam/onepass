@@ -1,0 +1,108 @@
+import {NativeModules, Platform} from 'react-native';
+
+export interface DockMenuItem {
+  id: string;
+  label: string;
+  enabled?: boolean;
+  separator?: boolean;
+}
+
+export interface DockState {
+  isLocked: boolean;
+  hasUnreadNotifications: boolean;
+}
+
+const {DockIconManager} = NativeModules;
+
+function getIsMacOS(): boolean {
+  return Platform.OS === 'macos';
+}
+
+export const DockIconService = {
+  setLockState(isLocked: boolean): void {
+    if (!getIsMacOS()) {
+      return;
+    }
+
+    if (DockIconManager?.setLockState) {
+      DockIconManager.setLockState(isLocked);
+    }
+  },
+
+  setBadge(count: number): void {
+    if (!getIsMacOS()) {
+      return;
+    }
+
+    if (DockIconManager?.setBadge) {
+      DockIconManager.setBadge(count);
+    }
+  },
+
+  clearBadge(): void {
+    if (!getIsMacOS()) {
+      return;
+    }
+
+    if (DockIconManager?.clearBadge) {
+      DockIconManager.clearBadge();
+    }
+  },
+
+  setDockMenu(items: DockMenuItem[]): void {
+    if (!getIsMacOS()) {
+      return;
+    }
+
+    if (DockIconManager?.setDockMenu) {
+      DockIconManager.setDockMenu(items);
+    }
+  },
+
+  onDockMenuItemSelected(callback: (itemId: string) => void): () => void {
+    if (!getIsMacOS()) {
+      return () => {};
+    }
+
+    if (DockIconManager?.onDockMenuItemSelected) {
+      const subscription = DockIconManager.onDockMenuItemSelected(callback);
+      return () => {
+        if (subscription?.remove) {
+          subscription.remove();
+        }
+      };
+    }
+
+    return () => {};
+  },
+
+  bounce(): void {
+    if (!getIsMacOS()) {
+      return;
+    }
+
+    if (DockIconManager?.bounce) {
+      DockIconManager.bounce();
+    }
+  },
+
+  bounceCritical(): void {
+    if (!getIsMacOS()) {
+      return;
+    }
+
+    if (DockIconManager?.bounceCritical) {
+      DockIconManager.bounceCritical();
+    }
+  },
+
+  cancelBounce(): void {
+    if (!getIsMacOS()) {
+      return;
+    }
+
+    if (DockIconManager?.cancelBounce) {
+      DockIconManager.cancelBounce();
+    }
+  },
+};

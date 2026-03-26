@@ -48,16 +48,16 @@
 
 - [x] 4.1 Initialize React Native macOS project in packages/desktop
 - [x] 4.2 Configure react-native-macos dependencies
-- [ ] 4.3 Implement keychain integration using keytar
-- [ ] 4.4 Implement Touch ID / Face ID integration for macOS
-- [ ] 4.5 Implement three-column layout component
-- [ ] 4.6 Implement sync server with Express (src/sync/server.ts)
-- [ ] 4.7 Implement mDNS advertisement with bonjour-service
-- [ ] 4.8 Implement GET /sync endpoint (return entries since timestamp)
-- [ ] 4.9 Implement POST /sync endpoint (merge incoming changes)
-- [ ] 4.10 Implement Bearer token authentication middleware
-- [ ] 4.11 Implement menu bar and keyboard shortcuts
-- [ ] 4.12 Implement system tray / Dock integration
+- [x] 4.3 Implement keychain integration using keytar
+- [x] 4.4 Implement Touch ID / Face ID integration for macOS
+- [x] 4.5 Implement three-column layout component
+- [x] 4.6 Implement sync server with Express (src/sync/server.ts)
+- [x] 4.7 Implement mDNS advertisement with bonjour-service
+- [x] 4.8 Implement GET /sync endpoint (return entries since timestamp)
+- [x] 4.9 Implement POST /sync endpoint (merge incoming changes)
+- [x] 4.10 Implement Bearer token authentication middleware
+- [x] 4.11 Implement menu bar and keyboard shortcuts
+- [x] 4.12 Implement system tray / Dock integration
 - [ ] 4.13 Implement light/dark mode adaptation
 - [ ] 4.14 Reuse mobile screens adapted for desktop layout
 - [ ] 4.15 Write integration tests for sync server
