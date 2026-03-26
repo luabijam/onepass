@@ -5,6 +5,7 @@ import type {
   SyncPayload,
   SyncResponse,
 } from '@onepass/vault-core';
+import {deserializeSyncPayload} from '@onepass/vault-core';
 
 export interface SyncServerConfig {
   token: string;
@@ -88,7 +89,8 @@ export function createSyncServer(config: SyncServerConfig) {
           return;
         }
 
-        const payload: SyncPayload = {entries, categories};
+        const rawPayload = {entries, categories};
+        const payload = deserializeSyncPayload(JSON.stringify(rawPayload));
 
         const merged = await config.mergeChanges(payload);
 
