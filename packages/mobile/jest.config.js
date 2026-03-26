@@ -7,5 +7,6 @@ module.exports = {
   moduleNameMapper: {
     'react-native-keychain': '<rootDir>/__mocks__/react-native-keychain.ts',
     'react-native-vector-icons/MaterialIcons': '<rootDir>/__mocks__/react-native-vector-icons.tsx',
+    '@onepass/vault-core': '<rootDir>/__mocks__/@onepass/vault-core.ts',
   },
 };

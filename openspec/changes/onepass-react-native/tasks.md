@@ -58,14 +58,14 @@
 - [x] 4.10 Implement Bearer token authentication middleware
 - [x] 4.11 Implement menu bar and keyboard shortcuts
 - [x] 4.12 Implement system tray / Dock integration
-- [ ] 4.13 Implement light/dark mode adaptation
-- [ ] 4.14 Reuse mobile screens adapted for desktop layout
-- [ ] 4.15 Write integration tests for sync server
+- [x] 4.13 Implement light/dark mode adaptation
+- [x] 4.14 Reuse mobile screens adapted for desktop layout
+- [x] 4.15 Write integration tests for sync server
 
 ## 5. Mobile Sync Client
 
-- [ ] 5.1 Implement mDNS discovery for finding desktop server
-- [ ] 5.2 Implement sync client with axios (GET and POST)
+- [x] 5.1 Implement mDNS discovery for finding desktop server
+- [x] 5.2 Implement sync client with axios (GET and POST)
 - [ ] 5.3 Implement bidirectional sync flow (pull then push)
 - [ ] 5.4 Handle sync conflicts and errors gracefully
 - [ ] 5.5 Store last sync timestamp for incremental sync
