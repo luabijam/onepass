@@ -5,6 +5,7 @@ module.exports = {
     'node_modules/(?!(.pnpm/)?(@react-native(.*)|react-native(.*)|@react-native-community(.*)|react-native-keychain)/)',
   ],
   moduleNameMapper: {
+    keytar: '<rootDir>/__mocks__/keytar.ts',
     'react-native-keychain': '<rootDir>/__mocks__/react-native-keychain.ts',
     'react-native-vector-icons/MaterialIcons':
       '<rootDir>/__mocks__/react-native-vector-icons.tsx',
