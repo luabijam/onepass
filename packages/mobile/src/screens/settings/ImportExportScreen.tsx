@@ -9,6 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import { AppIcon } from '../../components';
+import { theme } from '../../theme';
 
 export interface ImportExportScreenProps {
   exportInProgress: boolean;
@@ -49,7 +50,7 @@ export function ImportExportScreen({
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={onBack} testID="back-button">
-          <AppIcon name="arrow-back" size={24} color="#0A84FF" />
+          <AppIcon name="arrow-back" size={24} color={theme.colors.accent.primary} />
         </TouchableOpacity>
         <Text style={styles.title}>Import & Export</Text>
       </View>
@@ -63,7 +64,7 @@ export function ImportExportScreen({
           <View style={styles.card}>
             <View style={styles.statusRow}>
               <View style={styles.statusInfo}>
-                <AppIcon name="cloud-upload" size={24} color="#0A84FF" />
+                <AppIcon name="cloud-upload" size={24} color={theme.colors.accent.primary} />
                 <View style={styles.statusText}>
                   <Text style={styles.statusLabel}>Last Export</Text>
                   <Text style={styles.statusValue}>{lastExportDate || 'Never exported'}</Text>
@@ -78,7 +79,7 @@ export function ImportExportScreen({
             >
               {exportInProgress ? (
                 <View style={styles.buttonContent}>
-                  <ActivityIndicator size="small" color="#ffffff" />
+                  <ActivityIndicator size="small" color={theme.colors.text.primary} />
                   <Text style={styles.buttonText}>Exporting...</Text>
                 </View>
               ) : (
@@ -97,7 +98,7 @@ export function ImportExportScreen({
           <View style={styles.card}>
             <View style={styles.statusRow}>
               <View style={styles.statusInfo}>
-                <AppIcon name="cloud-download" size={24} color="#0A84FF" />
+                <AppIcon name="cloud-download" size={24} color={theme.colors.accent.primary} />
                 <View style={styles.statusText}>
                   <Text style={styles.statusLabel}>Import from File</Text>
                   <Text style={styles.statusValue}>Merge .onepass file</Text>
@@ -112,7 +113,7 @@ export function ImportExportScreen({
             >
               {importInProgress ? (
                 <View style={styles.buttonContent}>
-                  <ActivityIndicator size="small" color="#ffffff" />
+                  <ActivityIndicator size="small" color={theme.colors.text.primary} />
                   <Text style={styles.buttonText}>Importing...</Text>
                 </View>
               ) : (
@@ -124,7 +125,7 @@ export function ImportExportScreen({
 
         <View style={styles.warningSection}>
           <View style={styles.warningHeader}>
-            <AppIcon name="warning" size={20} color="#FF9500" />
+            <AppIcon name="warning" size={20} color={theme.colors.status.warning} />
             <Text style={styles.warningTitle}>Important</Text>
           </View>
           <Text style={styles.warningText}>
@@ -140,79 +141,79 @@ export function ImportExportScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1C1C1E',
+    backgroundColor: theme.colors.background.primary,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
+    padding: theme.typography.fontSize.lg,
     borderBottomWidth: 1,
-    borderBottomColor: '#3A3A3C',
+    borderBottomColor: theme.colors.background.tertiary,
   },
   backButton: {
-    marginRight: 16,
-    padding: 4,
+    marginRight: theme.typography.fontSize.lg,
+    padding: theme.spacing.xs,
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#ffffff',
+    fontSize: theme.typography.fontSize.xxxl,
+    fontWeight: theme.typography.fontWeight.bold,
+    color: theme.colors.text.primary,
   },
   content: {
     flex: 1,
-    padding: 16,
+    padding: theme.typography.fontSize.lg,
   },
   section: {
-    marginBottom: 24,
+    marginBottom: theme.typography.fontSize.xxl,
   },
   sectionTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#a0a0a0',
+    fontSize: theme.typography.fontSize.xs,
+    fontWeight: theme.typography.fontWeight.semibold,
+    color: theme.colors.text.secondary,
     textTransform: 'uppercase',
-    marginBottom: 8,
-    marginLeft: 4,
+    marginBottom: theme.spacing.sm,
+    marginLeft: theme.spacing.xs,
   },
   description: {
-    fontSize: 14,
-    color: '#a0a0a0',
-    lineHeight: 20,
-    marginBottom: 16,
+    fontSize: theme.typography.fontSize.md,
+    color: theme.colors.text.secondary,
+    lineHeight: theme.typography.fontSize.xxl,
+    marginBottom: theme.typography.fontSize.lg,
   },
   card: {
-    backgroundColor: '#2C2C2E',
-    borderRadius: 12,
-    padding: 16,
+    backgroundColor: theme.colors.background.secondary,
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.typography.fontSize.lg,
   },
   statusRow: {
-    marginBottom: 16,
+    marginBottom: theme.typography.fontSize.lg,
   },
   statusInfo: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   statusText: {
-    marginLeft: 12,
+    marginLeft: theme.typography.fontSize.md,
     flex: 1,
   },
   statusLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#ffffff',
+    fontSize: theme.typography.fontSize.lg,
+    fontWeight: theme.typography.fontWeight.semibold,
+    color: theme.colors.text.primary,
   },
   statusValue: {
-    fontSize: 14,
-    color: '#a0a0a0',
+    fontSize: theme.typography.fontSize.md,
+    color: theme.colors.text.secondary,
     marginTop: 2,
   },
   actionButton: {
-    backgroundColor: '#0A84FF',
-    paddingVertical: 12,
-    borderRadius: 8,
+    backgroundColor: theme.colors.accent.primary,
+    paddingVertical: theme.typography.fontSize.md,
+    borderRadius: theme.borderRadius.md,
     alignItems: 'center',
   },
   actionButtonDisabled: {
-    backgroundColor: '#3A3A3C',
+    backgroundColor: theme.colors.background.tertiary,
   },
   buttonContent: {
     flexDirection: 'row',
@@ -220,31 +221,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '600',
-    marginLeft: 8,
+    color: theme.colors.text.primary,
+    fontSize: theme.typography.fontSize.lg,
+    fontWeight: theme.typography.fontWeight.semibold,
+    marginLeft: theme.spacing.sm,
   },
   warningSection: {
-    backgroundColor: '#2C2C2E',
-    borderRadius: 12,
-    padding: 16,
-    marginTop: 8,
+    backgroundColor: theme.colors.background.secondary,
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.typography.fontSize.lg,
+    marginTop: theme.spacing.sm,
   },
   warningHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: theme.spacing.sm,
   },
   warningTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FF9500',
-    marginLeft: 8,
+    fontSize: theme.typography.fontSize.lg,
+    fontWeight: theme.typography.fontWeight.semibold,
+    color: theme.colors.status.warning,
+    marginLeft: theme.spacing.sm,
   },
   warningText: {
-    fontSize: 14,
-    color: '#a0a0a0',
-    lineHeight: 20,
+    fontSize: theme.typography.fontSize.md,
+    color: theme.colors.text.secondary,
+    lineHeight: theme.typography.fontSize.xxl,
   },
 });

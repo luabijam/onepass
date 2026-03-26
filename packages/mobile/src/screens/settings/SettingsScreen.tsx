@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { AppIcon } from '../../components';
+import { theme } from '../../theme';
 
 export interface SettingsScreenProps {
   lastSyncStatus: string | null;
@@ -27,7 +28,7 @@ export function SettingsScreen({
           <Text style={styles.sectionTitle}>Sync</Text>
           <View style={styles.settingItem}>
             <View style={styles.settingInfo}>
-              <AppIcon name="sync" size={24} color="#0A84FF" />
+              <AppIcon name="sync" size={24} color={theme.colors.accent.primary} />
               <View style={styles.settingText}>
                 <Text style={styles.settingLabel}>Sync Status</Text>
                 <Text style={styles.settingValue}>{lastSyncStatus || 'Never synced'}</Text>
@@ -51,7 +52,7 @@ export function SettingsScreen({
             testID="export-vault-button"
           >
             <View style={styles.settingInfo}>
-              <AppIcon name="cloud-upload" size={24} color="#0A84FF" />
+              <AppIcon name="cloud-upload" size={24} color={theme.colors.accent.primary} />
               <View style={styles.settingText}>
                 <Text style={styles.settingLabel}>Export Vault</Text>
                 <Text style={styles.settingValue}>Save encrypted backup</Text>
@@ -64,7 +65,7 @@ export function SettingsScreen({
             testID="import-vault-button"
           >
             <View style={styles.settingInfo}>
-              <AppIcon name="cloud-download" size={24} color="#0A84FF" />
+              <AppIcon name="cloud-download" size={24} color={theme.colors.accent.primary} />
               <View style={styles.settingText}>
                 <Text style={styles.settingLabel}>Import from File</Text>
                 <Text style={styles.settingValue}>Merge .onepass file</Text>
@@ -81,7 +82,7 @@ export function SettingsScreen({
             testID="manage-categories-button"
           >
             <View style={styles.settingInfo}>
-              <AppIcon name="category" size={24} color="#0A84FF" />
+              <AppIcon name="category" size={24} color={theme.colors.accent.primary} />
               <View style={styles.settingText}>
                 <Text style={styles.settingLabel}>Categories</Text>
                 <Text style={styles.settingValue}>Manage entry categories</Text>
@@ -97,41 +98,41 @@ export function SettingsScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1C1C1E',
+    backgroundColor: theme.colors.background.primary,
   },
   header: {
-    padding: 16,
+    padding: theme.typography.fontSize.lg,
     borderBottomWidth: 1,
-    borderBottomColor: '#3A3A3C',
+    borderBottomColor: theme.colors.background.tertiary,
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#ffffff',
+    fontSize: theme.typography.fontSize.xxxl,
+    fontWeight: theme.typography.fontWeight.bold,
+    color: theme.colors.text.primary,
   },
   content: {
     flex: 1,
   },
   section: {
-    marginTop: 24,
-    paddingHorizontal: 16,
+    marginTop: theme.typography.fontSize.xxl,
+    paddingHorizontal: theme.typography.fontSize.lg,
   },
   sectionTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#a0a0a0',
+    fontSize: theme.typography.fontSize.xs,
+    fontWeight: theme.typography.fontWeight.semibold,
+    color: theme.colors.text.secondary,
     textTransform: 'uppercase',
-    marginBottom: 8,
-    marginLeft: 4,
+    marginBottom: theme.spacing.sm,
+    marginLeft: theme.spacing.xs,
   },
   settingItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#2C2C2E',
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 8,
+    backgroundColor: theme.colors.background.secondary,
+    padding: theme.typography.fontSize.lg,
+    borderRadius: theme.borderRadius.md,
+    marginBottom: theme.spacing.sm,
   },
   settingInfo: {
     flexDirection: 'row',
@@ -139,29 +140,29 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   settingText: {
-    marginLeft: 12,
+    marginLeft: theme.typography.fontSize.md,
     flex: 1,
   },
   settingLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#ffffff',
+    fontSize: theme.typography.fontSize.lg,
+    fontWeight: theme.typography.fontWeight.semibold,
+    color: theme.colors.text.primary,
   },
   settingValue: {
-    fontSize: 14,
-    color: '#a0a0a0',
+    fontSize: theme.typography.fontSize.md,
+    color: theme.colors.text.secondary,
     marginTop: 2,
   },
   syncButton: {
-    backgroundColor: '#0A84FF',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-    marginLeft: 12,
+    backgroundColor: theme.colors.accent.primary,
+    paddingHorizontal: theme.typography.fontSize.lg,
+    paddingVertical: theme.spacing.sm,
+    borderRadius: theme.borderRadius.md,
+    marginLeft: theme.typography.fontSize.md,
   },
   syncButtonText: {
-    color: '#ffffff',
-    fontSize: 14,
-    fontWeight: '600',
+    color: theme.colors.text.primary,
+    fontSize: theme.typography.fontSize.md,
+    fontWeight: theme.typography.fontWeight.semibold,
   },
 });

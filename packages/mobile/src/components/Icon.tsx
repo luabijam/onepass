@@ -1,5 +1,6 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { theme } from '../theme';
 
 export type IconName =
   | 'lock'
@@ -46,6 +47,6 @@ export interface IconProps {
   testID?: string;
 }
 
-export function AppIcon({ name, size = 24, color = '#000', testID }: IconProps) {
+export function AppIcon({ name, size = 24, color = theme.colors.text.primary, testID }: IconProps) {
   return <Icon name={name} size={size} color={color} testID={testID} />;
 }

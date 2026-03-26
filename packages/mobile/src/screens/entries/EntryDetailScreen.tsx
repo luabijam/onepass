@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { AppIcon } from '../../components';
+import { theme } from '../../theme';
 
 interface Entry {
   id: string;
@@ -41,7 +42,7 @@ export function EntryDetailScreen({
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={onBackPress} style={styles.backButton} testID="back-button">
-          <AppIcon name="arrow-back" size={24} color="#ffffff" />
+          <AppIcon name="arrow-back" size={24} color={theme.colors.text.primary} />
         </TouchableOpacity>
         <Text style={styles.title}>{entry.title}</Text>
         <TouchableOpacity
@@ -49,7 +50,7 @@ export function EntryDetailScreen({
           style={styles.editButton}
           testID="edit-entry-button"
         >
-          <AppIcon name="edit" size={24} color="#0A84FF" />
+          <AppIcon name="edit" size={24} color={theme.colors.accent.primary} />
         </TouchableOpacity>
       </View>
 
@@ -106,7 +107,7 @@ function FieldRow({ label, value, onCopy, showCopied }: FieldRowProps): React.JS
           {showCopied ? (
             <Text style={styles.copiedText}>Copied</Text>
           ) : (
-            <AppIcon name="content-copy" size={20} color="#0A84FF" />
+            <AppIcon name="content-copy" size={20} color={theme.colors.accent.primary} />
           )}
         </TouchableOpacity>
       </View>
@@ -143,14 +144,14 @@ function PasswordFieldRow({
             <AppIcon
               name={showPassword ? 'visibility-off' : 'visibility'}
               size={20}
-              color="#0A84FF"
+              color={theme.colors.accent.primary}
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={onCopy} testID="copy-password">
             {showCopied ? (
               <Text style={styles.copiedText}>Copied</Text>
             ) : (
-              <AppIcon name="content-copy" size={20} color="#0A84FF" />
+              <AppIcon name="content-copy" size={20} color={theme.colors.accent.primary} />
             )}
           </TouchableOpacity>
         </View>
@@ -166,41 +167,41 @@ function maskPassword(password: string): string {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1C1C1E',
+    backgroundColor: theme.colors.background.primary,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: theme.typography.fontSize.lg,
+    paddingVertical: theme.typography.fontSize.md,
     borderBottomWidth: 1,
-    borderBottomColor: '#3A3A3C',
+    borderBottomColor: theme.colors.background.tertiary,
   },
   backButton: {
-    padding: 8,
-    marginRight: 8,
+    padding: theme.spacing.sm,
+    marginRight: theme.spacing.sm,
   },
   title: {
     flex: 1,
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#ffffff',
+    fontSize: theme.typography.fontSize.xxl,
+    fontWeight: theme.typography.fontWeight.semibold,
+    color: theme.colors.text.primary,
   },
   editButton: {
-    padding: 8,
+    padding: theme.spacing.sm,
   },
   content: {
     flex: 1,
-    padding: 16,
+    padding: theme.typography.fontSize.lg,
   },
   fieldContainer: {
-    marginBottom: 20,
+    marginBottom: theme.typography.fontSize.xl,
   },
   fieldLabel: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#a0a0a0',
-    marginBottom: 4,
+    fontSize: theme.typography.fontSize.xs,
+    fontWeight: theme.typography.fontWeight.medium,
+    color: theme.colors.text.secondary,
+    marginBottom: theme.spacing.xs,
     textTransform: 'uppercase',
   },
   fieldValueRow: {
@@ -210,25 +211,25 @@ const styles = StyleSheet.create({
   },
   fieldValue: {
     flex: 1,
-    fontSize: 16,
-    color: '#ffffff',
+    fontSize: theme.typography.fontSize.lg,
+    color: theme.colors.text.primary,
   },
   notesText: {
-    fontSize: 16,
-    color: '#ffffff',
-    lineHeight: 24,
+    fontSize: theme.typography.fontSize.lg,
+    color: theme.colors.text.primary,
+    lineHeight: theme.typography.fontSize.xxl,
   },
   passwordActions: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   iconButton: {
-    padding: 4,
-    marginRight: 8,
+    padding: theme.spacing.xs,
+    marginRight: theme.spacing.sm,
   },
   copiedText: {
-    fontSize: 14,
-    color: '#34C759',
-    fontWeight: '500',
+    fontSize: theme.typography.fontSize.md,
+    color: theme.colors.status.success,
+    fontWeight: theme.typography.fontWeight.medium,
   },
 });

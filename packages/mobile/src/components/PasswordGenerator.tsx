@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import { AppIcon } from './Icon';
+import { theme } from '../theme';
 
 export interface PasswordGeneratorProps {
   visible: boolean;
@@ -86,7 +87,7 @@ export function PasswordGenerator({
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Generate Password</Text>
             <TouchableOpacity onPress={onClose} testID="close-generator-button">
-              <AppIcon name="close" size={24} color="#ffffff" />
+              <AppIcon name="close" size={24} color={theme.colors.text.primary} />
             </TouchableOpacity>
           </View>
 
@@ -121,7 +122,9 @@ export function PasswordGenerator({
               style={[styles.checkbox, includeUppercase && styles.checkboxChecked]}
               testID="uppercase-toggle"
             >
-              {includeUppercase && <AppIcon name="check" size={16} color="#ffffff" />}
+              {includeUppercase && (
+                <AppIcon name="check" size={16} color={theme.colors.text.primary} />
+              )}
             </TouchableOpacity>
           </View>
 
@@ -132,7 +135,9 @@ export function PasswordGenerator({
               style={[styles.checkbox, includeLowercase && styles.checkboxChecked]}
               testID="lowercase-toggle"
             >
-              {includeLowercase && <AppIcon name="check" size={16} color="#ffffff" />}
+              {includeLowercase && (
+                <AppIcon name="check" size={16} color={theme.colors.text.primary} />
+              )}
             </TouchableOpacity>
           </View>
 
@@ -143,7 +148,9 @@ export function PasswordGenerator({
               style={[styles.checkbox, includeNumbers && styles.checkboxChecked]}
               testID="numbers-toggle"
             >
-              {includeNumbers && <AppIcon name="check" size={16} color="#ffffff" />}
+              {includeNumbers && (
+                <AppIcon name="check" size={16} color={theme.colors.text.primary} />
+              )}
             </TouchableOpacity>
           </View>
 
@@ -154,7 +161,9 @@ export function PasswordGenerator({
               style={[styles.checkbox, includeSymbols && styles.checkboxChecked]}
               testID="symbols-toggle"
             >
-              {includeSymbols && <AppIcon name="check" size={16} color="#ffffff" />}
+              {includeSymbols && (
+                <AppIcon name="check" size={16} color={theme.colors.text.primary} />
+              )}
             </TouchableOpacity>
           </View>
 
@@ -164,7 +173,7 @@ export function PasswordGenerator({
               style={styles.regenerateButton}
               testID="regenerate-button"
             >
-              <AppIcon name="sync" size={20} color="#0A84FF" />
+              <AppIcon name="sync" size={20} color={theme.colors.accent.primary} />
               <Text style={styles.regenerateButtonText}>Regenerate</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -184,104 +193,104 @@ export function PasswordGenerator({
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: theme.colors.overlay.dark,
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#2C2C2E',
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    padding: 20,
+    backgroundColor: theme.colors.background.secondary,
+    borderTopLeftRadius: theme.borderRadius.xl,
+    borderTopRightRadius: theme.borderRadius.xl,
+    padding: theme.typography.fontSize.xl,
     paddingBottom: 40,
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: theme.typography.fontSize.xl,
   },
   modalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#ffffff',
+    fontSize: theme.typography.fontSize.xl,
+    fontWeight: theme.typography.fontWeight.semibold,
+    color: theme.colors.text.primary,
   },
   generatedPasswordContainer: {
-    backgroundColor: '#1C1C1E',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 20,
+    backgroundColor: theme.colors.background.primary,
+    borderRadius: theme.borderRadius.md,
+    padding: theme.typography.fontSize.lg,
+    marginBottom: theme.typography.fontSize.xl,
   },
   generatedPassword: {
-    fontSize: 16,
+    fontSize: theme.typography.fontSize.lg,
     fontFamily: 'monospace',
-    color: '#ffffff',
+    color: theme.colors.text.primary,
     textAlign: 'center',
   },
   optionRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 12,
+    paddingVertical: theme.typography.fontSize.md,
     borderBottomWidth: 1,
-    borderBottomColor: '#3A3A3C',
+    borderBottomColor: theme.colors.background.tertiary,
   },
   optionLabel: {
-    fontSize: 16,
-    color: '#ffffff',
+    fontSize: theme.typography.fontSize.lg,
+    color: theme.colors.text.primary,
   },
   checkbox: {
     width: 24,
     height: 24,
-    borderRadius: 4,
+    borderRadius: theme.borderRadius.sm,
     borderWidth: 2,
-    borderColor: '#0A84FF',
+    borderColor: theme.colors.accent.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
   checkboxChecked: {
-    backgroundColor: '#0A84FF',
+    backgroundColor: theme.colors.accent.primary,
   },
   lengthButton: {
     width: 32,
     height: 32,
-    borderRadius: 16,
-    backgroundColor: '#0A84FF',
+    borderRadius: theme.borderRadius.full,
+    backgroundColor: theme.colors.accent.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 8,
+    marginLeft: theme.spacing.sm,
   },
   lengthButtonText: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#ffffff',
+    fontSize: theme.typography.fontSize.xl,
+    fontWeight: theme.typography.fontWeight.semibold,
+    color: theme.colors.text.primary,
   },
   modalActions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 20,
+    marginTop: theme.typography.fontSize.xl,
   },
   regenerateButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 8,
-    backgroundColor: '#1C1C1E',
+    paddingHorizontal: theme.typography.fontSize.lg,
+    paddingVertical: theme.typography.fontSize.md,
+    borderRadius: theme.borderRadius.md,
+    backgroundColor: theme.colors.background.primary,
   },
   regenerateButtonText: {
-    fontSize: 16,
-    color: '#0A84FF',
-    marginLeft: 8,
+    fontSize: theme.typography.fontSize.lg,
+    color: theme.colors.accent.primary,
+    marginLeft: theme.spacing.sm,
   },
   useButton: {
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
-    backgroundColor: '#0A84FF',
+    paddingHorizontal: theme.typography.fontSize.xxl,
+    paddingVertical: theme.typography.fontSize.md,
+    borderRadius: theme.borderRadius.md,
+    backgroundColor: theme.colors.accent.primary,
   },
   useButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#ffffff',
+    fontSize: theme.typography.fontSize.lg,
+    fontWeight: theme.typography.fontWeight.semibold,
+    color: theme.colors.text.primary,
   },
 });

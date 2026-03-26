@@ -9,6 +9,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { AppIcon } from '../../components';
+import { theme } from '../../theme';
 
 interface Category {
   id: string;
@@ -106,17 +107,17 @@ export function CategoryFormScreen({
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={onCancel} style={styles.backButton} testID="cancel-button">
-          <AppIcon name="close" size={24} color="#ffffff" />
+          <AppIcon name="close" size={24} color={theme.colors.text.primary} />
         </TouchableOpacity>
         <Text style={styles.title}>{isEditMode ? 'Edit Category' : 'New Category'}</Text>
         <TouchableOpacity onPress={handleSave} style={styles.saveButton} testID="save-button">
-          <AppIcon name="check" size={24} color="#0A84FF" />
+          <AppIcon name="check" size={24} color={theme.colors.accent.primary} />
         </TouchableOpacity>
       </View>
 
       {validationError && (
         <View style={styles.errorContainer} testID="validation-error">
-          <AppIcon name="error" size={16} color="#FF3B30" />
+          <AppIcon name="error" size={16} color={theme.colors.status.error} />
           <Text style={styles.errorText}>{validationError}</Text>
         </View>
       )}
@@ -132,7 +133,7 @@ export function CategoryFormScreen({
               clearValidationError();
             }}
             placeholder="Category name"
-            placeholderTextColor="#a0a0a0"
+            placeholderTextColor={theme.colors.text.secondary}
             testID="name-input"
           />
         </View>
@@ -145,7 +146,7 @@ export function CategoryFormScreen({
             testID="icon-button"
           >
             <Text style={styles.iconPreview}>{icon}</Text>
-            <AppIcon name="expand-more" size={20} color="#a0a0a0" />
+            <AppIcon name="expand-more" size={20} color={theme.colors.text.secondary} />
           </TouchableOpacity>
         </View>
 
@@ -157,7 +158,7 @@ export function CategoryFormScreen({
             testID="color-button"
           >
             <View style={[styles.colorPreview, { backgroundColor: color }]} />
-            <AppIcon name="expand-more" size={20} color="#a0a0a0" />
+            <AppIcon name="expand-more" size={20} color={theme.colors.text.secondary} />
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -203,7 +204,9 @@ export function CategoryFormScreen({
                   onPress={() => handleSelectColor(colorOption)}
                   testID={`color-option-${colorOption}`}
                 >
-                  {color === colorOption && <AppIcon name="check" size={20} color="#ffffff" />}
+                  {color === colorOption && (
+                    <AppIcon name="check" size={20} color={theme.colors.text.primary} />
+                  )}
                 </TouchableOpacity>
               ))}
             </View>
@@ -217,75 +220,75 @@ export function CategoryFormScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1C1C1E',
+    backgroundColor: theme.colors.background.primary,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: theme.typography.fontSize.lg,
+    paddingVertical: theme.typography.fontSize.md,
     borderBottomWidth: 1,
-    borderBottomColor: '#3A3A3C',
+    borderBottomColor: theme.colors.background.tertiary,
   },
   backButton: {
-    padding: 8,
-    marginRight: 8,
+    padding: theme.spacing.sm,
+    marginRight: theme.spacing.sm,
   },
   title: {
     flex: 1,
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#ffffff',
+    fontSize: theme.typography.fontSize.xxl,
+    fontWeight: theme.typography.fontWeight.semibold,
+    color: theme.colors.text.primary,
   },
   saveButton: {
-    padding: 8,
+    padding: theme.spacing.sm,
   },
   errorContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 59, 48, 0.2)',
-    marginHorizontal: 16,
-    marginTop: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
+    backgroundColor: theme.colors.status.errorBackground,
+    marginHorizontal: theme.typography.fontSize.lg,
+    marginTop: theme.typography.fontSize.md,
+    paddingHorizontal: theme.typography.fontSize.md,
+    paddingVertical: theme.spacing.sm,
+    borderRadius: theme.borderRadius.md,
   },
   errorText: {
-    color: '#FF3B30',
-    fontSize: 14,
-    marginLeft: 8,
+    color: theme.colors.status.error,
+    fontSize: theme.typography.fontSize.md,
+    marginLeft: theme.spacing.sm,
   },
   form: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 16,
+    paddingHorizontal: theme.typography.fontSize.lg,
+    paddingTop: theme.typography.fontSize.lg,
   },
   fieldContainer: {
-    marginBottom: 20,
+    marginBottom: theme.typography.fontSize.xl,
   },
   label: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#a0a0a0',
-    marginBottom: 8,
+    fontSize: theme.typography.fontSize.xs,
+    fontWeight: theme.typography.fontWeight.medium,
+    color: theme.colors.text.secondary,
+    marginBottom: theme.spacing.sm,
     textTransform: 'uppercase',
   },
   input: {
-    backgroundColor: '#2C2C2E',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    fontSize: 16,
-    color: '#ffffff',
+    backgroundColor: theme.colors.background.secondary,
+    borderRadius: theme.borderRadius.md,
+    paddingHorizontal: theme.typography.fontSize.md,
+    paddingVertical: theme.typography.fontSize.md,
+    fontSize: theme.typography.fontSize.lg,
+    color: theme.colors.text.primary,
   },
   iconSelector: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#2C2C2E',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
+    backgroundColor: theme.colors.background.secondary,
+    borderRadius: theme.borderRadius.md,
+    paddingHorizontal: theme.typography.fontSize.md,
+    paddingVertical: theme.typography.fontSize.md,
   },
   iconPreview: {
     fontSize: 28,
@@ -294,34 +297,34 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#2C2C2E',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
+    backgroundColor: theme.colors.background.secondary,
+    borderRadius: theme.borderRadius.md,
+    paddingHorizontal: theme.typography.fontSize.md,
+    paddingVertical: theme.typography.fontSize.md,
   },
   colorPreview: {
     width: 32,
     height: 32,
-    borderRadius: 16,
+    borderRadius: theme.borderRadius.full,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: theme.colors.overlay.dark,
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: '#2C2C2E',
-    borderRadius: 12,
-    padding: 20,
+    backgroundColor: theme.colors.background.secondary,
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.typography.fontSize.xl,
     width: '80%',
     maxWidth: 320,
   },
   modalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#ffffff',
-    marginBottom: 16,
+    fontSize: theme.typography.fontSize.xl,
+    fontWeight: theme.typography.fontWeight.semibold,
+    color: theme.colors.text.primary,
+    marginBottom: theme.typography.fontSize.lg,
     textAlign: 'center',
   },
   iconGrid: {
@@ -334,15 +337,15 @@ const styles = StyleSheet.create({
     height: 48,
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 4,
-    borderRadius: 8,
-    backgroundColor: '#3A3A3C',
+    margin: theme.spacing.xs,
+    borderRadius: theme.borderRadius.md,
+    backgroundColor: theme.colors.background.tertiary,
   },
   iconOptionSelected: {
-    backgroundColor: '#0A84FF',
+    backgroundColor: theme.colors.accent.primary,
   },
   iconOptionText: {
-    fontSize: 24,
+    fontSize: theme.typography.fontSize.xl + 4,
   },
   colorGrid: {
     flexDirection: 'row',
@@ -352,7 +355,7 @@ const styles = StyleSheet.create({
   colorOption: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: theme.borderRadius.full,
     margin: 6,
     justifyContent: 'center',
     alignItems: 'center',

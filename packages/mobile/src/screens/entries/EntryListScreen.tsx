@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { AppIcon } from '../../components';
+import { theme } from '../../theme';
 
 interface Entry {
   id: string;
@@ -69,11 +70,11 @@ export function EntryListScreen({
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
-        <AppIcon name="search" size={20} color="#a0a0a0" />
+        <AppIcon name="search" size={20} color={theme.colors.text.secondary} />
         <TextInput
           style={styles.searchInput}
           placeholder="Search entries..."
-          placeholderTextColor="#a0a0a0"
+          placeholderTextColor={theme.colors.text.secondary}
           value={searchQuery}
           onChangeText={setSearchQuery}
         />
@@ -86,7 +87,7 @@ export function EntryListScreen({
         contentContainerStyle={styles.listContent}
       />
       <TouchableOpacity style={styles.fab} onPress={onCreatePress} testID="create-entry-fab">
-        <AppIcon name="add" size={28} color="#ffffff" />
+        <AppIcon name="add" size={28} color={theme.colors.text.primary} />
       </TouchableOpacity>
     </View>
   );
@@ -95,61 +96,61 @@ export function EntryListScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1C1C1E',
+    backgroundColor: theme.colors.background.primary,
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2C2C2E',
-    marginHorizontal: 16,
-    marginVertical: 12,
-    paddingHorizontal: 12,
-    borderRadius: 8,
+    backgroundColor: theme.colors.background.secondary,
+    marginHorizontal: theme.typography.fontSize.lg,
+    marginVertical: theme.typography.fontSize.md,
+    paddingHorizontal: theme.typography.fontSize.md,
+    borderRadius: theme.borderRadius.md,
   },
   searchInput: {
     flex: 1,
-    color: '#ffffff',
-    fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 8,
+    color: theme.colors.text.primary,
+    fontSize: theme.typography.fontSize.lg,
+    paddingVertical: theme.typography.fontSize.md,
+    paddingHorizontal: theme.spacing.sm,
   },
   listContent: {
     flexGrow: 1,
-    paddingHorizontal: 16,
+    paddingHorizontal: theme.typography.fontSize.lg,
   },
   entryItem: {
-    backgroundColor: '#2C2C2E',
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 8,
+    backgroundColor: theme.colors.background.secondary,
+    padding: theme.typography.fontSize.lg,
+    borderRadius: theme.borderRadius.md,
+    marginBottom: theme.spacing.sm,
   },
   entryContent: {
     flex: 1,
   },
   entryTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#ffffff',
-    marginBottom: 4,
+    fontSize: theme.typography.fontSize.lg,
+    fontWeight: theme.typography.fontWeight.semibold,
+    color: theme.colors.text.primary,
+    marginBottom: theme.spacing.xs,
   },
   entryUsername: {
-    fontSize: 14,
-    color: '#a0a0a0',
+    fontSize: theme.typography.fontSize.md,
+    color: theme.colors.text.secondary,
   },
   emptyText: {
-    fontSize: 16,
-    color: '#a0a0a0',
+    fontSize: theme.typography.fontSize.lg,
+    color: theme.colors.text.secondary,
     textAlign: 'center',
-    marginTop: 32,
+    marginTop: theme.typography.fontSize.xxl * 2,
   },
   fab: {
     position: 'absolute',
-    right: 20,
-    bottom: 20,
+    right: theme.typography.fontSize.xl,
+    bottom: theme.typography.fontSize.xl,
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#0A84FF',
+    backgroundColor: theme.colors.accent.primary,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,

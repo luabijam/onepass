@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { AppIcon } from '../../components';
+import { theme } from '../../theme';
 
 export interface SyncSettingsScreenProps {
   lastSyncStatus: string | null;
@@ -19,7 +20,7 @@ export function SyncSettingsScreen({
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={onBack} testID="back-button">
-          <AppIcon name="arrow-back" size={24} color="#0A84FF" />
+          <AppIcon name="arrow-back" size={24} color={theme.colors.accent.primary} />
         </TouchableOpacity>
         <Text style={styles.title}>Sync Settings</Text>
       </View>
@@ -35,7 +36,7 @@ export function SyncSettingsScreen({
         <View style={styles.syncCard}>
           <View style={styles.syncStatusRow}>
             <View style={styles.syncStatusInfo}>
-              <AppIcon name="sync" size={24} color="#0A84FF" />
+              <AppIcon name="sync" size={24} color={theme.colors.accent.primary} />
               <View style={styles.syncStatusText}>
                 <Text style={styles.syncStatusLabel}>Sync Status</Text>
                 <Text style={styles.syncStatusValue}>{lastSyncStatus || 'Never synced'}</Text>
@@ -51,7 +52,7 @@ export function SyncSettingsScreen({
           >
             {syncInProgress ? (
               <View style={styles.syncButtonContent}>
-                <ActivityIndicator size="small" color="#ffffff" />
+                <ActivityIndicator size="small" color={theme.colors.text.primary} />
                 <Text style={styles.syncButtonText}>Syncing...</Text>
               </View>
             ) : (
@@ -67,78 +68,78 @@ export function SyncSettingsScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1C1C1E',
+    backgroundColor: theme.colors.background.primary,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
+    padding: theme.typography.fontSize.lg,
     borderBottomWidth: 1,
-    borderBottomColor: '#3A3A3C',
+    borderBottomColor: theme.colors.background.tertiary,
   },
   backButton: {
-    marginRight: 16,
-    padding: 4,
+    marginRight: theme.typography.fontSize.lg,
+    padding: theme.spacing.xs,
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#ffffff',
+    fontSize: theme.typography.fontSize.xxxl,
+    fontWeight: theme.typography.fontWeight.bold,
+    color: theme.colors.text.primary,
   },
   content: {
     flex: 1,
-    padding: 16,
+    padding: theme.typography.fontSize.lg,
   },
   section: {
-    marginBottom: 24,
+    marginBottom: theme.typography.fontSize.xxl,
   },
   sectionTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#a0a0a0',
+    fontSize: theme.typography.fontSize.xs,
+    fontWeight: theme.typography.fontWeight.semibold,
+    color: theme.colors.text.secondary,
     textTransform: 'uppercase',
-    marginBottom: 8,
-    marginLeft: 4,
+    marginBottom: theme.spacing.sm,
+    marginLeft: theme.spacing.xs,
   },
   description: {
-    fontSize: 14,
-    color: '#a0a0a0',
-    lineHeight: 20,
+    fontSize: theme.typography.fontSize.md,
+    color: theme.colors.text.secondary,
+    lineHeight: theme.typography.fontSize.xxl,
   },
   syncCard: {
-    backgroundColor: '#2C2C2E',
-    borderRadius: 12,
-    padding: 16,
+    backgroundColor: theme.colors.background.secondary,
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.typography.fontSize.lg,
   },
   syncStatusRow: {
-    marginBottom: 16,
+    marginBottom: theme.typography.fontSize.lg,
   },
   syncStatusInfo: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   syncStatusText: {
-    marginLeft: 12,
+    marginLeft: theme.typography.fontSize.md,
     flex: 1,
   },
   syncStatusLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#ffffff',
+    fontSize: theme.typography.fontSize.lg,
+    fontWeight: theme.typography.fontWeight.semibold,
+    color: theme.colors.text.primary,
   },
   syncStatusValue: {
-    fontSize: 14,
-    color: '#a0a0a0',
+    fontSize: theme.typography.fontSize.md,
+    color: theme.colors.text.secondary,
     marginTop: 2,
   },
   syncButton: {
-    backgroundColor: '#0A84FF',
-    paddingVertical: 12,
-    borderRadius: 8,
+    backgroundColor: theme.colors.accent.primary,
+    paddingVertical: theme.typography.fontSize.md,
+    borderRadius: theme.borderRadius.md,
     alignItems: 'center',
   },
   syncButtonDisabled: {
-    backgroundColor: '#3A3A3C',
+    backgroundColor: theme.colors.background.tertiary,
   },
   syncButtonContent: {
     flexDirection: 'row',
@@ -146,9 +147,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   syncButtonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '600',
-    marginLeft: 8,
+    color: theme.colors.text.primary,
+    fontSize: theme.typography.fontSize.lg,
+    fontWeight: theme.typography.fontWeight.semibold,
+    marginLeft: theme.spacing.sm,
   },
 });

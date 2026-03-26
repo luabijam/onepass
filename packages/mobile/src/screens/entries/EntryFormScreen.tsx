@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { AppIcon, PasswordGenerator } from '../../components';
+import { theme } from '../../theme';
 
 interface Entry {
   id: string;
@@ -89,17 +90,17 @@ export function EntryFormScreen({
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={onCancel} style={styles.backButton} testID="cancel-button">
-          <AppIcon name="close" size={24} color="#ffffff" />
+          <AppIcon name="close" size={24} color={theme.colors.text.primary} />
         </TouchableOpacity>
         <Text style={styles.title}>{isEditMode ? 'Edit Entry' : 'New Entry'}</Text>
         <TouchableOpacity onPress={handleSave} style={styles.saveButton} testID="save-button">
-          <AppIcon name="check" size={24} color="#0A84FF" />
+          <AppIcon name="check" size={24} color={theme.colors.accent.primary} />
         </TouchableOpacity>
       </View>
 
       {validationError && (
         <View style={styles.errorContainer} testID="validation-error">
-          <AppIcon name="error" size={16} color="#FF3B30" />
+          <AppIcon name="error" size={16} color={theme.colors.status.error} />
           <Text style={styles.errorText}>{validationError}</Text>
         </View>
       )}
@@ -115,7 +116,7 @@ export function EntryFormScreen({
               clearValidationError();
             }}
             placeholder="Entry title"
-            placeholderTextColor="#a0a0a0"
+            placeholderTextColor={theme.colors.text.secondary}
             testID="title-input"
           />
         </View>
@@ -130,7 +131,7 @@ export function EntryFormScreen({
               clearValidationError();
             }}
             placeholder="Username or email"
-            placeholderTextColor="#a0a0a0"
+            placeholderTextColor={theme.colors.text.secondary}
             autoCapitalize="none"
             autoCorrect={false}
             testID="username-input"
@@ -145,7 +146,7 @@ export function EntryFormScreen({
               value={password}
               onChangeText={setPassword}
               placeholder="Password"
-              placeholderTextColor="#a0a0a0"
+              placeholderTextColor={theme.colors.text.secondary}
               secureTextEntry={!showPassword}
               autoCapitalize="none"
               autoCorrect={false}
@@ -159,7 +160,7 @@ export function EntryFormScreen({
               <AppIcon
                 name={showPassword ? 'visibility-off' : 'visibility'}
                 size={20}
-                color="#0A84FF"
+                color={theme.colors.accent.primary}
               />
             </TouchableOpacity>
             <TouchableOpacity
@@ -167,7 +168,7 @@ export function EntryFormScreen({
               style={styles.iconButton}
               testID="generate-password-button"
             >
-              <AppIcon name="vpn-key" size={20} color="#0A84FF" />
+              <AppIcon name="vpn-key" size={20} color={theme.colors.accent.primary} />
             </TouchableOpacity>
           </View>
         </View>
@@ -179,7 +180,7 @@ export function EntryFormScreen({
             value={url}
             onChangeText={setUrl}
             placeholder="https://example.com"
-            placeholderTextColor="#a0a0a0"
+            placeholderTextColor={theme.colors.text.secondary}
             autoCapitalize="none"
             autoCorrect={false}
             keyboardType="url"
@@ -194,7 +195,7 @@ export function EntryFormScreen({
             value={notes}
             onChangeText={setNotes}
             placeholder="Additional notes"
-            placeholderTextColor="#a0a0a0"
+            placeholderTextColor={theme.colors.text.secondary}
             multiline
             numberOfLines={4}
             textAlignVertical="top"
@@ -215,66 +216,66 @@ export function EntryFormScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1C1C1E',
+    backgroundColor: theme.colors.background.primary,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: theme.typography.fontSize.lg,
+    paddingVertical: theme.typography.fontSize.md,
     borderBottomWidth: 1,
-    borderBottomColor: '#3A3A3C',
+    borderBottomColor: theme.colors.background.tertiary,
   },
   backButton: {
-    padding: 8,
-    marginRight: 8,
+    padding: theme.spacing.sm,
+    marginRight: theme.spacing.sm,
   },
   title: {
     flex: 1,
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#ffffff',
+    fontSize: theme.typography.fontSize.xxl,
+    fontWeight: theme.typography.fontWeight.semibold,
+    color: theme.colors.text.primary,
   },
   saveButton: {
-    padding: 8,
+    padding: theme.spacing.sm,
   },
   errorContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 59, 48, 0.2)',
-    marginHorizontal: 16,
-    marginTop: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
+    backgroundColor: theme.colors.status.errorBackground,
+    marginHorizontal: theme.typography.fontSize.lg,
+    marginTop: theme.typography.fontSize.md,
+    paddingHorizontal: theme.typography.fontSize.md,
+    paddingVertical: theme.spacing.sm,
+    borderRadius: theme.borderRadius.md,
   },
   errorText: {
-    color: '#FF3B30',
-    fontSize: 14,
-    marginLeft: 8,
+    color: theme.colors.status.error,
+    fontSize: theme.typography.fontSize.md,
+    marginLeft: theme.spacing.sm,
   },
   form: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 16,
+    paddingHorizontal: theme.typography.fontSize.lg,
+    paddingTop: theme.typography.fontSize.lg,
   },
   fieldContainer: {
-    marginBottom: 20,
+    marginBottom: theme.typography.fontSize.xl,
   },
   label: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#a0a0a0',
-    marginBottom: 8,
+    fontSize: theme.typography.fontSize.xs,
+    fontWeight: theme.typography.fontWeight.medium,
+    color: theme.colors.text.secondary,
+    marginBottom: theme.spacing.sm,
     textTransform: 'uppercase',
   },
   input: {
-    backgroundColor: '#2C2C2E',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    fontSize: 16,
-    color: '#ffffff',
+    backgroundColor: theme.colors.background.secondary,
+    borderRadius: theme.borderRadius.md,
+    paddingHorizontal: theme.typography.fontSize.md,
+    paddingVertical: theme.typography.fontSize.md,
+    fontSize: theme.typography.fontSize.lg,
+    color: theme.colors.text.primary,
   },
   notesInput: {
     minHeight: 100,
@@ -285,15 +286,15 @@ const styles = StyleSheet.create({
   },
   passwordInput: {
     flex: 1,
-    backgroundColor: '#2C2C2E',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    fontSize: 16,
-    color: '#ffffff',
+    backgroundColor: theme.colors.background.secondary,
+    borderRadius: theme.borderRadius.md,
+    paddingHorizontal: theme.typography.fontSize.md,
+    paddingVertical: theme.typography.fontSize.md,
+    fontSize: theme.typography.fontSize.lg,
+    color: theme.colors.text.primary,
   },
   iconButton: {
-    padding: 8,
-    marginLeft: 8,
+    padding: theme.spacing.sm,
+    marginLeft: theme.spacing.sm,
   },
 });
