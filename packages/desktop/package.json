@@ -14,10 +14,12 @@
   },
   "dependencies": {
     "@onepass/vault-core": "workspace:*",
+    "@types/react-native-vector-icons": "^6.4.18",
     "keytar": "^7.9.0",
     "react": "18.3.1",
     "react-native": "0.76.6",
-    "react-native-macos": "0.76.6"
+    "react-native-macos": "0.76.6",
+    "react-native-vector-icons": "^10.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

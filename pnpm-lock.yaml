@@ -56,6 +56,9 @@ importers:
       '@onepass/vault-core':
         specifier: workspace:*
         version: link:../vault-core
+      '@types/react-native-vector-icons':
+        specifier: ^6.4.18
+        version: 6.4.18
       keytar:
         specifier: ^7.9.0
         version: 7.9.0
@@ -68,6 +71,9 @@ importers:
       react-native-macos:
         specifier: 0.76.6
         version: 0.76.6(@babel/core@7.29.0)(@babel/preset-env@7.29.2)(@types/react@18.3.28)(react-native@0.76.6)(react@18.3.1)
+      react-native-vector-icons:
+        specifier: ^10.3.0
+        version: 10.3.0
     devDependencies:
       '@babel/core':
         specifier: ^7.25.2
