@@ -5,3 +5,7 @@ export type { DiscoveredService } from './MdnsDiscovery.js';
 export { SyncFlow, SyncFlowError } from './SyncFlow.js';
 export type { SyncFlowConfig, SyncResult, PartialSyncResult } from './SyncFlow.js';
 export { SyncTimestampStorage } from './SyncTimestampStorage.js';
+export { VaultStorage } from './VaultStorage.js';
+export { importVault, exportVault, verifyPassword, deriveKeyFromPassword } from './VaultExport.js';
+export type { ExportData } from './VaultExport.js';
+export * from './RnCrypto.js';
