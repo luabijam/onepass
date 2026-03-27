@@ -11,7 +11,7 @@ describe('mergeEntries', () => {
 
       const result = mergeEntries(local, remote);
 
-      expect(result.size).toBe(0);
+      expect(result.entries.size).toBe(0);
     });
 
     it('returns copy of remote when local is empty', () => {
@@ -23,9 +23,9 @@ describe('mergeEntries', () => {
 
       const result = mergeEntries(local, remote);
 
-      expect(result.size).toBe(2);
-      expect(result.get('entry-1')?.title).toBe('GitHub');
-      expect(result.get('entry-2')?.title).toBe('GitLab');
+      expect(result.entries.size).toBe(2);
+      expect(result.entries.get('entry-1')?.title).toBe('GitHub');
+      expect(result.entries.get('entry-2')?.title).toBe('GitLab');
     });
 
     it('returns copy of local when remote is empty', () => {
@@ -45,8 +45,8 @@ describe('mergeEntries', () => {
 
       const result = mergeEntries(local, remote);
 
-      expect(result.size).toBe(1);
-      expect(result.get('entry-1')?.title).toBe('Local Entry');
+      expect(result.entries.size).toBe(1);
+      expect(result.entries.get('entry-1')?.title).toBe('Local Entry');
     });
   });
 
@@ -59,8 +59,8 @@ describe('mergeEntries', () => {
 
       const result = mergeEntries(local, remote);
 
-      expect(result.size).toBe(1);
-      expect(result.get('remote-1')?.title).toBe('GitHub');
+      expect(result.entries.size).toBe(1);
+      expect(result.entries.get('remote-1')?.title).toBe('GitHub');
     });
   });
 
@@ -91,8 +91,8 @@ describe('mergeEntries', () => {
       const local = new Map([['entry-1', localEntry]]);
       const result = mergeEntries(local, [remoteEntry]);
 
-      expect(result.get('entry-1')?.title).toBe('New Title');
-      expect(result.get('entry-1')?.password).toBe('new-pass');
+      expect(result.entries.get('entry-1')?.title).toBe('New Title');
+      expect(result.entries.get('entry-1')?.password).toBe('new-pass');
     });
   });
 
@@ -123,8 +123,8 @@ describe('mergeEntries', () => {
       const local = new Map([['entry-1', localEntry]]);
       const result = mergeEntries(local, [remoteEntry]);
 
-      expect(result.get('entry-1')?.title).toBe('Newer Local');
-      expect(result.get('entry-1')?.password).toBe('local-pass');
+      expect(result.entries.get('entry-1')?.title).toBe('Newer Local');
+      expect(result.entries.get('entry-1')?.password).toBe('local-pass');
     });
   });
 
@@ -156,7 +156,7 @@ describe('mergeEntries', () => {
       const local = new Map([['entry-1', localEntry]]);
       const result = mergeEntries(local, [remoteEntry]);
 
-      expect(result.get('entry-1')?.deletedAt).toEqual(new Date('2026-01-02'));
+      expect(result.entries.get('entry-1')?.deletedAt).toEqual(new Date('2026-01-02'));
     });
 
     it('sets deletedAt when local is deleted', () => {
@@ -186,7 +186,7 @@ describe('mergeEntries', () => {
       const local = new Map([['entry-1', localEntry]]);
       const result = mergeEntries(local, [remoteEntry]);
 
-      expect(result.get('entry-1')?.deletedAt).toEqual(new Date('2026-01-03'));
+      expect(result.entries.get('entry-1')?.deletedAt).toEqual(new Date('2026-01-03'));
     });
 
     it('preserves earlier deletion timestamp when both deleted', () => {
@@ -217,7 +217,7 @@ describe('mergeEntries', () => {
       const local = new Map([['entry-1', localEntry]]);
       const result = mergeEntries(local, [remoteEntry]);
 
-      expect(result.get('entry-1')?.deletedAt).toEqual(new Date('2026-01-02'));
+      expect(result.entries.get('entry-1')?.deletedAt).toEqual(new Date('2026-01-02'));
     });
 
     it('preserves local deletion timestamp when local deleted earlier', () => {
@@ -248,7 +248,7 @@ describe('mergeEntries', () => {
       const local = new Map([['entry-1', localEntry]]);
       const result = mergeEntries(local, [remoteEntry]);
 
-      expect(result.get('entry-1')?.deletedAt).toEqual(new Date('2026-01-01'));
+      expect(result.entries.get('entry-1')?.deletedAt).toEqual(new Date('2026-01-01'));
     });
 
     it('uses remote content when both deleted and remote is newer', () => {
@@ -279,9 +279,9 @@ describe('mergeEntries', () => {
       const local = new Map([['entry-1', localEntry]]);
       const result = mergeEntries(local, [remoteEntry]);
 
-      expect(result.get('entry-1')?.title).toBe('Remote Deleted');
-      expect(result.get('entry-1')?.username).toBe('remote-user');
-      expect(result.get('entry-1')?.deletedAt).toEqual(new Date('2026-01-02'));
+      expect(result.entries.get('entry-1')?.title).toBe('Remote Deleted');
+      expect(result.entries.get('entry-1')?.username).toBe('remote-user');
+      expect(result.entries.get('entry-1')?.deletedAt).toEqual(new Date('2026-01-02'));
     });
 
     it('uses remote content when remote is deleted and newer', () => {
@@ -311,9 +311,9 @@ describe('mergeEntries', () => {
       const local = new Map([['entry-1', localEntry]]);
       const result = mergeEntries(local, [remoteEntry]);
 
-      expect(result.get('entry-1')?.title).toBe('Deleted Remote');
-      expect(result.get('entry-1')?.username).toBe('deleted-user');
-      expect(result.get('entry-1')?.deletedAt).toEqual(new Date('2026-01-03'));
+      expect(result.entries.get('entry-1')?.title).toBe('Deleted Remote');
+      expect(result.entries.get('entry-1')?.username).toBe('deleted-user');
+      expect(result.entries.get('entry-1')?.deletedAt).toEqual(new Date('2026-01-03'));
     });
 
     it('preserves local deletion timestamp when local is deleted and newer', () => {
@@ -343,8 +343,8 @@ describe('mergeEntries', () => {
       const local = new Map([['entry-1', localEntry]]);
       const result = mergeEntries(local, [remoteEntry]);
 
-      expect(result.get('entry-1')?.title).toBe('Deleted Local');
-      expect(result.get('entry-1')?.deletedAt).toEqual(new Date('2026-01-01'));
+      expect(result.entries.get('entry-1')?.title).toBe('Deleted Local');
+      expect(result.entries.get('entry-1')?.deletedAt).toEqual(new Date('2026-01-01'));
     });
   });
 
@@ -376,7 +376,7 @@ describe('mergeEntries', () => {
       const local = new Map([['entry-1', localEntry]]);
       const result = mergeEntries(local, [remoteEntry]);
 
-      expect(result.get('entry-1')?.title).toBe('Local Version');
+      expect(result.entries.get('entry-1')?.title).toBe('Local Version');
     });
   });
 
@@ -446,10 +446,10 @@ describe('mergeEntries', () => {
 
       const result = mergeEntries(local, remote);
 
-      expect(result.size).toBe(3);
-      expect(result.get('entry-1')?.title).toBe('Remote 1 Updated');
-      expect(result.get('entry-2')?.title).toBe('Local 2');
-      expect(result.get('entry-3')?.title).toBe('New Entry');
+      expect(result.entries.size).toBe(3);
+      expect(result.entries.get('entry-1')?.title).toBe('Remote 1 Updated');
+      expect(result.entries.get('entry-2')?.title).toBe('Local 2');
+      expect(result.entries.get('entry-3')?.title).toBe('New Entry');
     });
 
     it('handles mixed delete-wins across multiple entries', () => {
@@ -506,8 +506,204 @@ describe('mergeEntries', () => {
 
       const result = mergeEntries(local, [remoteDeleted, remoteActive]);
 
-      expect(result.get('entry-1')?.deletedAt).toEqual(new Date('2026-01-03'));
-      expect(result.get('entry-2')?.deletedAt).toEqual(new Date('2026-01-03'));
+      expect(result.entries.get('entry-1')?.deletedAt).toEqual(new Date('2026-01-03'));
+      expect(result.entries.get('entry-2')?.deletedAt).toEqual(new Date('2026-01-03'));
+    });
+  });
+
+  describe('conflict detection', () => {
+    it('reports conflict when local and remote entries are both modified', () => {
+      const localEntry: Entry = {
+        id: 'entry-1',
+        title: 'Local Modified',
+        username: 'user',
+        password: 'local-pass',
+        categoryId: 'uncategorized',
+        isFavorite: false,
+        createdAt: new Date('2026-01-01'),
+        updatedAt: new Date('2026-01-03'),
+      };
+
+      const remoteEntry: Entry = {
+        id: 'entry-1',
+        title: 'Remote Modified',
+        username: 'user',
+        password: 'remote-pass',
+        categoryId: 'work',
+        isFavorite: true,
+        createdAt: new Date('2026-01-01'),
+        updatedAt: new Date('2026-01-02'),
+      };
+
+      const local = new Map([['entry-1', localEntry]]);
+      const result = mergeEntries(local, [remoteEntry]);
+
+      expect(result.conflicts).toHaveLength(1);
+      expect(result.conflicts[0]).toEqual({
+        id: 'entry-1',
+        type: 'entry',
+        localVersion: localEntry,
+        remoteVersion: remoteEntry,
+        resolution: 'local',
+      });
+    });
+
+    it('reports conflict when remote is newer than local', () => {
+      const localEntry: Entry = {
+        id: 'entry-1',
+        title: 'Local Modified',
+        username: 'user',
+        password: 'local-pass',
+        categoryId: 'uncategorized',
+        isFavorite: false,
+        createdAt: new Date('2026-01-01'),
+        updatedAt: new Date('2026-01-02'),
+      };
+
+      const remoteEntry: Entry = {
+        id: 'entry-1',
+        title: 'Remote Modified',
+        username: 'user',
+        password: 'remote-pass',
+        categoryId: 'work',
+        isFavorite: true,
+        createdAt: new Date('2026-01-01'),
+        updatedAt: new Date('2026-01-03'),
+      };
+
+      const local = new Map([['entry-1', localEntry]]);
+      const result = mergeEntries(local, [remoteEntry]);
+
+      expect(result.conflicts).toHaveLength(1);
+      expect(result.conflicts[0].resolution).toBe('remote');
+    });
+
+    it('reports no conflicts when only remote exists', () => {
+      const local = new Map<string, Entry>();
+      const remote = [createEntry('entry-1', 'New Entry', 'user', 'pass', 'uncategorized')];
+
+      const result = mergeEntries(local, remote);
+
+      expect(result.conflicts).toHaveLength(0);
+    });
+
+    it('reports no conflicts when only local exists', () => {
+      const localEntry: Entry = {
+        id: 'entry-1',
+        title: 'Local Entry',
+        username: 'user',
+        password: 'pass',
+        categoryId: 'uncategorized',
+        isFavorite: false,
+        createdAt: new Date('2026-01-01'),
+        updatedAt: new Date('2026-01-01'),
+      };
+
+      const local = new Map([['entry-1', localEntry]]);
+      const result = mergeEntries(local, []);
+
+      expect(result.conflicts).toHaveLength(0);
+    });
+
+    it('reports conflict when both deleted but with different data', () => {
+      const localEntry: Entry = {
+        id: 'entry-1',
+        title: 'Local Deleted',
+        username: 'user',
+        password: 'local-pass',
+        categoryId: 'uncategorized',
+        isFavorite: false,
+        createdAt: new Date('2026-01-01'),
+        updatedAt: new Date('2026-01-02'),
+        deletedAt: new Date('2026-01-02'),
+      };
+
+      const remoteEntry: Entry = {
+        id: 'entry-1',
+        title: 'Remote Deleted',
+        username: 'user',
+        password: 'remote-pass',
+        categoryId: 'work',
+        isFavorite: true,
+        createdAt: new Date('2026-01-01'),
+        updatedAt: new Date('2026-01-03'),
+        deletedAt: new Date('2026-01-03'),
+      };
+
+      const local = new Map([['entry-1', localEntry]]);
+      const result = mergeEntries(local, [remoteEntry]);
+
+      expect(result.conflicts).toHaveLength(1);
+    });
+
+    it('reports multiple conflicts', () => {
+      const localEntry1: Entry = {
+        id: 'entry-1',
+        title: 'Local 1',
+        username: 'user1',
+        password: 'pass1',
+        categoryId: 'uncategorized',
+        isFavorite: false,
+        createdAt: new Date('2026-01-01'),
+        updatedAt: new Date('2026-01-02'),
+      };
+
+      const localEntry2: Entry = {
+        id: 'entry-2',
+        title: 'Local 2',
+        username: 'user2',
+        password: 'pass2',
+        categoryId: 'work',
+        isFavorite: false,
+        createdAt: new Date('2026-01-01'),
+        updatedAt: new Date('2026-01-02'),
+      };
+
+      const remoteEntry1: Entry = {
+        ...localEntry1,
+        title: 'Remote 1',
+        password: 'new-pass1',
+        updatedAt: new Date('2026-01-03'),
+      };
+
+      const remoteEntry2: Entry = {
+        ...localEntry2,
+        title: 'Remote 2',
+        password: 'new-pass2',
+        updatedAt: new Date('2026-01-03'),
+      };
+
+      const local = new Map([
+        ['entry-1', localEntry1],
+        ['entry-2', localEntry2],
+      ]);
+      const result = mergeEntries(local, [remoteEntry1, remoteEntry2]);
+
+      expect(result.conflicts).toHaveLength(2);
+    });
+
+    it('reports no conflict when entries have same updatedAt and same content', () => {
+      const timestamp = new Date('2026-01-02T12:00:00Z');
+      const localEntry: Entry = {
+        id: 'entry-1',
+        title: 'Same Title',
+        username: 'user',
+        password: 'pass',
+        categoryId: 'uncategorized',
+        isFavorite: false,
+        createdAt: new Date('2026-01-01'),
+        updatedAt: timestamp,
+      };
+
+      const remoteEntry: Entry = {
+        ...localEntry,
+        updatedAt: timestamp,
+      };
+
+      const local = new Map([['entry-1', localEntry]]);
+      const result = mergeEntries(local, [remoteEntry]);
+
+      expect(result.conflicts).toHaveLength(0);
     });
   });
 });
@@ -520,7 +716,7 @@ describe('mergeCategories', () => {
 
       const result = mergeCategories(local, remote);
 
-      expect(result.size).toBe(0);
+      expect(result.categories.size).toBe(0);
     });
 
     it('returns copy of remote when local is empty', () => {
@@ -532,9 +728,9 @@ describe('mergeCategories', () => {
 
       const result = mergeCategories(local, remote);
 
-      expect(result.size).toBe(2);
-      expect(result.get('cat-1')?.name).toBe('Work');
-      expect(result.get('cat-2')?.name).toBe('Personal');
+      expect(result.categories.size).toBe(2);
+      expect(result.categories.get('cat-1')?.name).toBe('Work');
+      expect(result.categories.get('cat-2')?.name).toBe('Personal');
     });
 
     it('returns copy of local when remote is empty', () => {
@@ -551,8 +747,8 @@ describe('mergeCategories', () => {
 
       const result = mergeCategories(local, remote);
 
-      expect(result.size).toBe(1);
-      expect(result.get('cat-1')?.name).toBe('Local Category');
+      expect(result.categories.size).toBe(1);
+      expect(result.categories.get('cat-1')?.name).toBe('Local Category');
     });
   });
 
@@ -563,8 +759,8 @@ describe('mergeCategories', () => {
 
       const result = mergeCategories(local, remote);
 
-      expect(result.size).toBe(1);
-      expect(result.get('work-id')?.name).toBe('Work');
+      expect(result.categories.size).toBe(1);
+      expect(result.categories.get('work-id')?.name).toBe('Work');
     });
   });
 
@@ -589,8 +785,8 @@ describe('mergeCategories', () => {
       const local = new Map([['cat-1', localCat]]);
       const result = mergeCategories(local, [remoteCat]);
 
-      expect(result.get('cat-1')?.name).toBe('New Name');
-      expect(result.get('cat-1')?.icon).toBe('💼');
+      expect(result.categories.get('cat-1')?.name).toBe('New Name');
+      expect(result.categories.get('cat-1')?.icon).toBe('💼');
     });
   });
 
@@ -615,7 +811,7 @@ describe('mergeCategories', () => {
       const local = new Map([['cat-1', localCat]]);
       const result = mergeCategories(local, [remoteCat]);
 
-      expect(result.get('cat-1')?.name).toBe('Newer Local');
+      expect(result.categories.get('cat-1')?.name).toBe('Newer Local');
     });
   });
 
@@ -641,7 +837,7 @@ describe('mergeCategories', () => {
       const local = new Map([['cat-1', localCat]]);
       const result = mergeCategories(local, [remoteCat]);
 
-      expect(result.get('cat-1')?.deletedAt).toEqual(new Date('2026-01-02'));
+      expect(result.categories.get('cat-1')?.deletedAt).toEqual(new Date('2026-01-02'));
     });
 
     it('sets deletedAt when local is deleted', () => {
@@ -665,7 +861,7 @@ describe('mergeCategories', () => {
       const local = new Map([['cat-1', localCat]]);
       const result = mergeCategories(local, [remoteCat]);
 
-      expect(result.get('cat-1')?.deletedAt).toEqual(new Date('2026-01-03'));
+      expect(result.categories.get('cat-1')?.deletedAt).toEqual(new Date('2026-01-03'));
     });
 
     it('preserves earlier deletion timestamp when both deleted', () => {
@@ -690,7 +886,7 @@ describe('mergeCategories', () => {
       const local = new Map([['cat-1', localCat]]);
       const result = mergeCategories(local, [remoteCat]);
 
-      expect(result.get('cat-1')?.deletedAt).toEqual(new Date('2026-01-02'));
+      expect(result.categories.get('cat-1')?.deletedAt).toEqual(new Date('2026-01-02'));
     });
 
     it('preserves local deletion timestamp when local deleted earlier', () => {
@@ -715,7 +911,7 @@ describe('mergeCategories', () => {
       const local = new Map([['cat-1', localCat]]);
       const result = mergeCategories(local, [remoteCat]);
 
-      expect(result.get('cat-1')?.deletedAt).toEqual(new Date('2026-01-01'));
+      expect(result.categories.get('cat-1')?.deletedAt).toEqual(new Date('2026-01-01'));
     });
 
     it('uses remote content when both deleted and remote is newer', () => {
@@ -740,9 +936,9 @@ describe('mergeCategories', () => {
       const local = new Map([['cat-1', localCat]]);
       const result = mergeCategories(local, [remoteCat]);
 
-      expect(result.get('cat-1')?.name).toBe('Remote Deleted');
-      expect(result.get('cat-1')?.icon).toBe('💼');
-      expect(result.get('cat-1')?.deletedAt).toEqual(new Date('2026-01-02'));
+      expect(result.categories.get('cat-1')?.name).toBe('Remote Deleted');
+      expect(result.categories.get('cat-1')?.icon).toBe('💼');
+      expect(result.categories.get('cat-1')?.deletedAt).toEqual(new Date('2026-01-02'));
     });
 
     it('uses remote content when remote is deleted and newer', () => {
@@ -766,8 +962,8 @@ describe('mergeCategories', () => {
       const local = new Map([['cat-1', localCat]]);
       const result = mergeCategories(local, [remoteCat]);
 
-      expect(result.get('cat-1')?.name).toBe('Deleted Remote');
-      expect(result.get('cat-1')?.deletedAt).toEqual(new Date('2026-01-03'));
+      expect(result.categories.get('cat-1')?.name).toBe('Deleted Remote');
+      expect(result.categories.get('cat-1')?.deletedAt).toEqual(new Date('2026-01-03'));
     });
 
     it('preserves local deletion when local is deleted and newer', () => {
@@ -791,8 +987,8 @@ describe('mergeCategories', () => {
       const local = new Map([['cat-1', localCat]]);
       const result = mergeCategories(local, [remoteCat]);
 
-      expect(result.get('cat-1')?.name).toBe('Deleted Local');
-      expect(result.get('cat-1')?.deletedAt).toEqual(new Date('2026-01-01'));
+      expect(result.categories.get('cat-1')?.name).toBe('Deleted Local');
+      expect(result.categories.get('cat-1')?.deletedAt).toEqual(new Date('2026-01-01'));
     });
   });
 
@@ -807,7 +1003,7 @@ describe('mergeCategories', () => {
       const local = new Map([['uncategorized', localDefault]]);
       const result = mergeCategories(local, [remoteDefault]);
 
-      expect(result.get('uncategorized')?.updatedAt).toEqual(new Date('2026-02-01'));
+      expect(result.categories.get('uncategorized')?.updatedAt).toEqual(new Date('2026-02-01'));
     });
   });
 
@@ -833,7 +1029,7 @@ describe('mergeCategories', () => {
       const local = new Map([['cat-1', localCat]]);
       const result = mergeCategories(local, [remoteCat]);
 
-      expect(result.get('cat-1')?.name).toBe('Local Version');
+      expect(result.categories.get('cat-1')?.name).toBe('Local Version');
     });
   });
 
@@ -874,10 +1070,10 @@ describe('mergeCategories', () => {
 
       const result = mergeCategories(local, remote);
 
-      expect(result.size).toBe(3);
-      expect(result.get('cat-1')?.name).toBe('Remote 1 Updated');
-      expect(result.get('cat-2')?.name).toBe('Local 2');
-      expect(result.get('cat-3')?.name).toBe('New Category');
+      expect(result.categories.size).toBe(3);
+      expect(result.categories.get('cat-1')?.name).toBe('Remote 1 Updated');
+      expect(result.categories.get('cat-2')?.name).toBe('Local 2');
+      expect(result.categories.get('cat-3')?.name).toBe('New Category');
     });
   });
 
@@ -898,6 +1094,132 @@ describe('mergeCategories', () => {
 
       expect(local.size).toBe(1);
       expect(local.get('cat-1')?.name).toBe('Local');
+    });
+  });
+
+  describe('conflict detection', () => {
+    it('reports conflict when local and remote categories are both modified', () => {
+      const localCat: Category = {
+        id: 'cat-1',
+        name: 'Local Name',
+        icon: '📁',
+        color: '#000000',
+        updatedAt: new Date('2026-01-03'),
+      };
+
+      const remoteCat: Category = {
+        id: 'cat-1',
+        name: 'Remote Name',
+        icon: '💼',
+        color: '#FF5733',
+        updatedAt: new Date('2026-01-02'),
+      };
+
+      const local = new Map([['cat-1', localCat]]);
+      const result = mergeCategories(local, [remoteCat]);
+
+      expect(result.conflicts).toHaveLength(1);
+      expect(result.conflicts[0]).toEqual({
+        id: 'cat-1',
+        type: 'category',
+        localVersion: localCat,
+        remoteVersion: remoteCat,
+        resolution: 'local',
+      });
+    });
+
+    it('reports conflict when remote category is newer', () => {
+      const localCat: Category = {
+        id: 'cat-1',
+        name: 'Local Name',
+        icon: '📁',
+        color: '#000000',
+        updatedAt: new Date('2026-01-02'),
+      };
+
+      const remoteCat: Category = {
+        id: 'cat-1',
+        name: 'Remote Name',
+        icon: '💼',
+        color: '#FF5733',
+        updatedAt: new Date('2026-01-03'),
+      };
+
+      const local = new Map([['cat-1', localCat]]);
+      const result = mergeCategories(local, [remoteCat]);
+
+      expect(result.conflicts).toHaveLength(1);
+      expect(result.conflicts[0].resolution).toBe('remote');
+    });
+
+    it('reports no conflicts when only remote category exists', () => {
+      const local = new Map<string, Category>();
+      const remote = [createCategory('cat-1', 'Work', '💼', '#FF5733')];
+
+      const result = mergeCategories(local, remote);
+
+      expect(result.conflicts).toHaveLength(0);
+    });
+
+    it('reports no conflicts when only local category exists', () => {
+      const localCat: Category = {
+        id: 'cat-1',
+        name: 'Local Category',
+        icon: '📁',
+        color: '#000000',
+        updatedAt: new Date('2026-01-01'),
+      };
+
+      const local = new Map([['cat-1', localCat]]);
+      const result = mergeCategories(local, []);
+
+      expect(result.conflicts).toHaveLength(0);
+    });
+
+    it('reports conflict when both categories deleted with different data', () => {
+      const localCat: Category = {
+        id: 'cat-1',
+        name: 'Local Deleted',
+        icon: '📁',
+        color: '#000000',
+        updatedAt: new Date('2026-01-02'),
+        deletedAt: new Date('2026-01-02'),
+      };
+
+      const remoteCat: Category = {
+        id: 'cat-1',
+        name: 'Remote Deleted',
+        icon: '💼',
+        color: '#FF5733',
+        updatedAt: new Date('2026-01-03'),
+        deletedAt: new Date('2026-01-03'),
+      };
+
+      const local = new Map([['cat-1', localCat]]);
+      const result = mergeCategories(local, [remoteCat]);
+
+      expect(result.conflicts).toHaveLength(1);
+    });
+
+    it('reports no conflict when categories have same updatedAt and same content', () => {
+      const timestamp = new Date('2026-01-02T12:00:00Z');
+      const localCat: Category = {
+        id: 'cat-1',
+        name: 'Same Name',
+        icon: '📁',
+        color: '#000000',
+        updatedAt: timestamp,
+      };
+
+      const remoteCat: Category = {
+        ...localCat,
+        updatedAt: timestamp,
+      };
+
+      const local = new Map([['cat-1', localCat]]);
+      const result = mergeCategories(local, [remoteCat]);
+
+      expect(result.conflicts).toHaveLength(0);
     });
   });
 });

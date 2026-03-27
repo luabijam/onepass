@@ -1,4 +1,10 @@
-export { mergeEntries, mergeCategories } from './merge.js';
+export {
+  mergeEntries,
+  mergeCategories,
+  type MergeConflict,
+  type MergeEntriesResult,
+  type MergeCategoriesResult,
+} from './merge.js';
 export {
   type SyncPayload,
   type SyncResponse,
