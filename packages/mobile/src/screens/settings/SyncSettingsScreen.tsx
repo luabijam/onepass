@@ -1,21 +1,33 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
-import { AppIcon } from '../../components';
+import { AppIcon, SyncStatusIndicator } from '../../components';
+import type { SyncStatus } from '../../components';
 import { theme } from '../../theme';
 
 export interface SyncSettingsScreenProps {
-  lastSyncStatus: string | null;
+  lastSyncTime?: Date | null;
   syncInProgress: boolean;
+  syncError?: string | null;
   onSyncNow: () => void;
   onBack: () => void;
 }
 
 export function SyncSettingsScreen({
-  lastSyncStatus,
+  lastSyncTime,
   syncInProgress,
+  syncError,
   onSyncNow,
   onBack,
 }: SyncSettingsScreenProps): React.JSX.Element {
+  const getSyncStatus = (): SyncStatus => {
+    if (syncInProgress) return 'syncing';
+    if (syncError) return 'error';
+    if (lastSyncTime) return 'success';
+    return 'idle';
+  };
+
+  const status = getSyncStatus();
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -39,7 +51,11 @@ export function SyncSettingsScreen({
               <AppIcon name="sync" size={24} color={theme.colors.accent.primary} />
               <View style={styles.syncStatusText}>
                 <Text style={styles.syncStatusLabel}>Sync Status</Text>
-                <Text style={styles.syncStatusValue}>{lastSyncStatus || 'Never synced'}</Text>
+                <SyncStatusIndicator
+                  status={status}
+                  lastSyncTime={lastSyncTime ?? undefined}
+                  errorMessage={syncError ?? undefined}
+                />
               </View>
             </View>
           </View>
@@ -126,11 +142,6 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.fontSize.lg,
     fontWeight: theme.typography.fontWeight.semibold,
     color: theme.colors.text.primary,
-  },
-  syncStatusValue: {
-    fontSize: theme.typography.fontSize.md,
-    color: theme.colors.text.secondary,
-    marginTop: 2,
   },
   syncButton: {
     backgroundColor: theme.colors.accent.primary,
