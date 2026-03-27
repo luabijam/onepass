@@ -7,6 +7,9 @@
   "scripts": {
     "macos": "react-native run-macos",
     "macos:release": "cd macos && xcodebuild -workspace desktop.xcworkspace -scheme desktop-macOS -configuration Release -derivedDataPath build",
+    "macos:sign": "../../scripts/build-signed.sh",
+    "macos:notarize": "../../scripts/notarize.sh macos/build/Build/Products/Release/OnePass.app",
+    "macos:distribute": "pnpm run macos:sign && pnpm run macos:notarize",
     "macos:clean": "rm -rf macos/build",
     "macos:pod": "cd macos && pod install",
     "start": "react-native start",

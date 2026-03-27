@@ -82,9 +82,9 @@
 ## 7. Build and Deployment
 
 - [x] 7.1 Configure Android build (release APK)
-- [ ] 7.2 Configure macOS build (release .app bundle)
-- [ ] 7.3 Set up code signing for Android
-- [ ] 7.4 Set up code signing for macOS (Developer ID)
+- [x] 7.2 Configure macOS build (release .app bundle)
+- [x] 7.3 Set up code signing for Android
+- [x] 7.4 Set up code signing for macOS (Developer ID)
 - [ ] 7.5 Create build scripts in root package.json
 
 ## 8. Documentation and Finalization
