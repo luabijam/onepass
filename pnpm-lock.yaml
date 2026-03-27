@@ -156,6 +156,9 @@ importers:
       '@onepass/vault-core':
         specifier: workspace:^
         version: link:../vault-core
+      '@react-native-async-storage/async-storage':
+        specifier: ^3.0.2
+        version: 3.0.2(react-native@0.76.6)(react@18.3.1)
       '@react-native-clipboard/clipboard':
         specifier: ^1.16.3
         version: 1.16.3(react-native@0.76.6)(react@18.3.1)
@@ -2001,6 +2004,17 @@ packages:
     dependencies:
       '@noble/hashes': 1.8.0
     dev: true
+
+  /@react-native-async-storage/async-storage@3.0.2(react-native@0.76.6)(react@18.3.1):
+    resolution: {integrity: sha512-XP0zDIl+1XoeuQ7f878qXKdl77zLwzLALPpxvNRc7ZtDh9ew36WSvOdQOhFkexMySapFAWxEbZxS8K8J2DU4eg==}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
+    dependencies:
+      idb: 8.0.3
+      react: 18.3.1
+      react-native: 0.76.6(@babel/core@7.29.0)(@babel/preset-env@7.29.2)(@types/react@18.3.28)(react@18.3.1)
+    dev: false
 
   /@react-native-clipboard/clipboard@1.16.3(react-native@0.76.6)(react@18.3.1):
     resolution: {integrity: sha512-cMIcvoZKIrShzJHEaHbTAp458R9WOv0fB6UyC7Ek4Qk561Ow/DrzmmJmH/rAZg21Z6ixJ4YSdFDC14crqIBmCQ==}
@@ -5201,6 +5215,10 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       safer-buffer: 2.1.2
+    dev: false
+
+  /idb@8.0.3:
+    resolution: {integrity: sha512-LtwtVyVYO5BqRvcsKuB2iUMnHwPVByPCXFXOpuU96IZPPoPN6xjOGxZQ74pgSVVLQWtUOYgyeL4GE98BY5D3wg==}
     dev: false
 
   /ieee754@1.2.1:
