@@ -74,9 +74,9 @@
 ## 6. Cross-Package Integration
 
 - [x] 6.1 Wire vault-core into mobile app
-- [ ] 6.2 Wire vault-core into desktop app
-- [ ] 6.3 Ensure vault format compatibility (test import/export between platforms)
-- [ ] 6.4 Test sync between mobile and desktop
+- [x] 6.2 Wire vault-core into desktop app
+- [x] 6.3 Ensure vault format compatibility (test import/export between platforms)
+- [x] 6.4 Test sync between mobile and desktop
 - [ ] 6.5 Verify biometric unlock works on both platforms
 
 ## 7. Build and Deployment
