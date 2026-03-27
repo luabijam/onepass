@@ -1,19 +1,45 @@
 import React from 'react';
 import {render, screen, fireEvent} from '@testing-library/react-native';
-import {CategorySidebar, Category} from '../src/components/CategorySidebar';
+import {CategorySidebar} from '../src/components/CategorySidebar';
+import type {Category} from '@onepass/vault-core';
 
 describe('CategorySidebar', () => {
   const mockCategories: Category[] = [
-    {id: 'cat-1', name: 'Social', icon: 'person', color: '#FF5722', count: 5},
-    {id: 'cat-2', name: 'Work', icon: 'folder', color: '#2196F3', count: 3},
-    {id: 'cat-3', name: 'Finance', icon: 'vpn-key', color: '#4CAF50', count: 2},
+    {
+      id: 'cat-1',
+      name: 'Social',
+      icon: 'person',
+      color: '#FF5722',
+      updatedAt: new Date(),
+    },
+    {
+      id: 'cat-2',
+      name: 'Work',
+      icon: 'folder',
+      color: '#2196F3',
+      updatedAt: new Date(),
+    },
+    {
+      id: 'cat-3',
+      name: 'Finance',
+      icon: 'vpn-key',
+      color: '#4CAF50',
+      updatedAt: new Date(),
+    },
   ];
+
+  const mockCategoryCounts: Record<string, number> = {
+    'cat-1': 5,
+    'cat-2': 3,
+    'cat-3': 2,
+  };
 
   const defaultProps = {
     categories: mockCategories,
     selectedCategoryId: null,
     onCategoryPress: jest.fn(),
     allEntriesCount: 10,
+    categoryCounts: mockCategoryCounts,
   };
 
   beforeEach(() => {
@@ -80,7 +106,12 @@ describe('CategorySidebar', () => {
 
   it('renders empty list gracefully', () => {
     render(
-      <CategorySidebar {...defaultProps} categories={[]} allEntriesCount={0} />,
+      <CategorySidebar
+        {...defaultProps}
+        categories={[]}
+        allEntriesCount={0}
+        categoryCounts={{}}
+      />,
     );
 
     expect(screen.getByText('All Entries')).toBeTruthy();

@@ -66,14 +66,14 @@
 
 - [x] 5.1 Implement mDNS discovery for finding desktop server
 - [x] 5.2 Implement sync client with axios (GET and POST)
-- [ ] 5.3 Implement bidirectional sync flow (pull then push)
-- [ ] 5.4 Handle sync conflicts and errors gracefully
-- [ ] 5.5 Store last sync timestamp for incremental sync
-- [ ] 5.6 Show sync status in UI (syncing, success, error)
+- [x] 5.3 Implement bidirectional sync flow (pull then push)
+- [x] 5.4 Handle sync conflicts and errors gracefully
+- [x] 5.5 Store last sync timestamp for incremental sync
+- [x] 5.6 Show sync status in UI (syncing, success, error)
 
 ## 6. Cross-Package Integration
 
-- [ ] 6.1 Wire vault-core into mobile app
+- [x] 6.1 Wire vault-core into mobile app
 - [ ] 6.2 Wire vault-core into desktop app
 - [ ] 6.3 Ensure vault format compatibility (test import/export between platforms)
 - [ ] 6.4 Test sync between mobile and desktop

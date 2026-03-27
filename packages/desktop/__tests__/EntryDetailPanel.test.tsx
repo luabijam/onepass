@@ -1,7 +1,7 @@
 import React from 'react';
 import {render, screen, fireEvent} from '@testing-library/react-native';
 import {EntryDetailPanel} from '../src/components/EntryDetailPanel';
-import type {Entry} from '../src/components/EntryListPanel';
+import type {Entry} from '@onepass/vault-core';
 
 jest.mock('@react-native-clipboard/clipboard', () => ({
   setString: jest.fn(),

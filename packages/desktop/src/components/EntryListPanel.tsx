@@ -7,22 +7,9 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import type {Entry} from '@onepass/vault-core';
 import {AppIcon} from './Icon';
 import {theme} from '../theme';
-
-export interface Entry {
-  id: string;
-  title: string;
-  username: string;
-  password: string;
-  url?: string;
-  notes?: string;
-  categoryId: string;
-  isFavorite: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date;
-}
 
 export interface EntryListPanelProps {
   entries: Entry[];

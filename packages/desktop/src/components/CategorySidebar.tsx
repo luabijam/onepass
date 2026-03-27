@@ -1,21 +1,15 @@
 import React from 'react';
 import {View, Text, FlatList, TouchableOpacity, StyleSheet} from 'react-native';
-import {AppIcon, IconName} from './Icon';
+import type {Category} from '@onepass/vault-core';
+import {AppIcon} from './Icon';
 import {theme} from '../theme';
-
-export interface Category {
-  id: string;
-  name: string;
-  icon: IconName;
-  color: string;
-  count: number;
-}
 
 export interface CategorySidebarProps {
   categories: Category[];
   selectedCategoryId: string | null;
   onCategoryPress: (categoryId: string | null) => void;
   allEntriesCount: number;
+  categoryCounts: Record<string, number>;
 }
 
 export function CategorySidebar({
@@ -23,9 +17,11 @@ export function CategorySidebar({
   selectedCategoryId,
   onCategoryPress,
   allEntriesCount,
+  categoryCounts,
 }: CategorySidebarProps): React.JSX.Element {
   const renderCategory = ({item}: {item: Category}) => {
     const isSelected = selectedCategoryId === item.id;
+    const count = categoryCounts[item.id] ?? 0;
     return (
       <TouchableOpacity
         style={[styles.categoryItem, isSelected && styles.categoryItemSelected]}
@@ -47,7 +43,7 @@ export function CategorySidebar({
             styles.categoryCount,
             isSelected && styles.categoryCountSelected,
           ]}>
-          {item.count}
+          {count}
         </Text>
       </TouchableOpacity>
     );

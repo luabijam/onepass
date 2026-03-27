@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {AppIcon} from './Icon';
 import {theme} from '../theme';
-import type {Entry} from './EntryListPanel';
+import type {Entry} from '@onepass/vault-core';
 
 export interface EntryDetailPanelProps {
   entry: Entry | null;

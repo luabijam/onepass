@@ -1,61 +1,61 @@
-import React, {useState, useMemo} from 'react';
+import React, {useState, useMemo, useEffect} from 'react';
 import {StyleSheet} from 'react-native';
 import {
   ThreeColumnLayout,
   CategorySidebar,
-  Category,
   EntryListPanel,
-  Entry,
   EntryDetailPanel,
 } from './components';
-
-const SAMPLE_ENTRIES: Entry[] = [
-  {
-    id: 'entry-1',
-    title: 'Test Entry',
-    username: 'testuser',
-    password: 'testpass',
-    url: 'https://example.com',
-    categoryId: 'cat-1',
-    isFavorite: false,
-    createdAt: new Date('2024-01-01'),
-    updatedAt: new Date('2024-01-01'),
-  },
-  {
-    id: 'entry-2',
-    title: 'Another Entry',
-    username: 'anotheruser',
-    password: 'anotherpass',
-    categoryId: 'cat-2',
-    isFavorite: true,
-    createdAt: new Date('2024-01-02'),
-    updatedAt: new Date('2024-01-02'),
-  },
-];
-
-const SAMPLE_CATEGORIES: Category[] = [
-  {id: 'cat-1', name: 'Personal', icon: 'person', color: '#FF0000', count: 1},
-  {id: 'cat-2', name: 'Work', icon: 'folder', color: '#00FF00', count: 1},
-];
+import {useVaultStore} from './stores';
+import type {Entry, Category} from '@onepass/vault-core';
 
 function App(): React.JSX.Element {
+  const {
+    isUnlocked,
+    isInitialized,
+    entries,
+    categories,
+    isLoading,
+    initialize,
+  } = useVaultStore();
+
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
     null,
   );
   const [selectedEntryId, setSelectedEntryId] = useState<string | null>(null);
 
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
+
+  const activeEntries = useMemo(() => {
+    return entries.filter((entry: Entry) => !entry.deletedAt);
+  }, [entries]);
+
+  const activeCategories = useMemo(() => {
+    return categories.filter((category: Category) => !category.deletedAt);
+  }, [categories]);
+
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const entry of activeEntries) {
+      counts[entry.categoryId] = (counts[entry.categoryId] ?? 0) + 1;
+    }
+    return counts;
+  }, [activeEntries]);
+
   const filteredEntries = useMemo(() => {
     if (selectedCategoryId === null) {
-      return SAMPLE_ENTRIES;
+      return activeEntries;
     }
-    return SAMPLE_ENTRIES.filter(
-      entry => entry.categoryId === selectedCategoryId,
+    return activeEntries.filter(
+      (entry: Entry) => entry.categoryId === selectedCategoryId,
     );
-  }, [selectedCategoryId]);
+  }, [activeEntries, selectedCategoryId]);
 
   const selectedEntry = useMemo(() => {
-    return SAMPLE_ENTRIES.find(entry => entry.id === selectedEntryId) ?? null;
-  }, [selectedEntryId]);
+    return entries.find((entry: Entry) => entry.id === selectedEntryId) ?? null;
+  }, [entries, selectedEntryId]);
 
   const handleCategoryPress = (categoryId: string | null) => {
     setSelectedCategoryId(categoryId);
@@ -70,14 +70,48 @@ function App(): React.JSX.Element {
 
   const handleEditEntry = () => {};
 
+  if (isLoading) {
+    return (
+      <ThreeColumnLayout
+        sidebar={null}
+        list={null}
+        detail={null}
+        style={styles.layout}
+      />
+    );
+  }
+
+  if (!isInitialized) {
+    return (
+      <ThreeColumnLayout
+        sidebar={null}
+        list={null}
+        detail={null}
+        style={styles.layout}
+      />
+    );
+  }
+
+  if (!isUnlocked) {
+    return (
+      <ThreeColumnLayout
+        sidebar={null}
+        list={null}
+        detail={null}
+        style={styles.layout}
+      />
+    );
+  }
+
   return (
     <ThreeColumnLayout
       sidebar={
         <CategorySidebar
-          categories={SAMPLE_CATEGORIES}
+          categories={activeCategories}
           selectedCategoryId={selectedCategoryId}
           onCategoryPress={handleCategoryPress}
-          allEntriesCount={SAMPLE_ENTRIES.length}
+          allEntriesCount={activeEntries.length}
+          categoryCounts={categoryCounts}
         />
       }
       list={

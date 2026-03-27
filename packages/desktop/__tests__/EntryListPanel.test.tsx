@@ -1,6 +1,7 @@
 import React from 'react';
 import {render, screen, fireEvent} from '@testing-library/react-native';
-import {EntryListPanel, Entry} from '../src/components/EntryListPanel';
+import {EntryListPanel} from '../src/components/EntryListPanel';
+import type {Entry} from '@onepass/vault-core';
 
 describe('EntryListPanel', () => {
   const mockEntries: Entry[] = [

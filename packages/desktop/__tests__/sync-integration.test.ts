@@ -26,17 +26,17 @@ describe('POST /sync Integration', () => {
       const localEntryMap = new Map(localEntries.map(e => [e.id, e]));
       const localCategoryMap = new Map(localCategories.map(c => [c.id, c]));
 
-      const mergedEntries = mergeEntries(localEntryMap, payload.entries);
-      const mergedCategories = mergeCategories(
+      const mergedEntriesResult = mergeEntries(localEntryMap, payload.entries);
+      const mergedCategoriesResult = mergeCategories(
         localCategoryMap,
         payload.categories,
       );
 
-      for (const entry of mergedEntries.values()) {
+      for (const entry of mergedEntriesResult.entries.values()) {
         await vaultService.upsertEntry(entry);
       }
 
-      for (const category of mergedCategories.values()) {
+      for (const category of mergedCategoriesResult.categories.values()) {
         await vaultService.upsertCategory(category);
       }
 
