@@ -1,0 +1,24 @@
+*.iml
+.gradle
+local.properties
+/.idea
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Keystore files - NEVER commit these
+*.jks
+*.keystore
+keystore.properties
+
+# Built APKs
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Gradle wrapper (downloaded automatically)
+gradle/wrapper/gradle-wrapper.jar

@@ -77,11 +77,11 @@
 - [x] 6.2 Wire vault-core into desktop app
 - [x] 6.3 Ensure vault format compatibility (test import/export between platforms)
 - [x] 6.4 Test sync between mobile and desktop
-- [ ] 6.5 Verify biometric unlock works on both platforms
+- [x] 6.5 Verify biometric unlock works on both platforms
 
 ## 7. Build and Deployment
 
-- [ ] 7.1 Configure Android build (release APK)
+- [x] 7.1 Configure Android build (release APK)
 - [ ] 7.2 Configure macOS build (release .app bundle)
 - [ ] 7.3 Set up code signing for Android
 - [ ] 7.4 Set up code signing for macOS (Developer ID)
