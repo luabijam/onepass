@@ -85,12 +85,12 @@
 - [x] 7.2 Configure macOS build (release .app bundle)
 - [x] 7.3 Set up code signing for Android
 - [x] 7.4 Set up code signing for macOS (Developer ID)
-- [ ] 7.5 Create build scripts in root package.json
+- [x] 7.5 Create build scripts in root package.json
 
 ## 8. Documentation and Finalization
 
-- [ ] 8.1 Write README.md with setup instructions
-- [ ] 8.2 Document devcontainer setup for new developers
-- [ ] 8.3 Document vault format for future reference
-- [ ] 8.4 Document sync protocol for future reference
+- [x] 8.1 Write README.md with setup instructions
+- [x] 8.2 Document devcontainer setup for new developers
+- [x] 8.3 Document vault format for future reference
+- [x] 8.4 Document sync protocol for future reference
 - [ ] 8.5 Add MIT LICENSE file
