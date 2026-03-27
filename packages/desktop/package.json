@@ -6,6 +6,9 @@
   "main": "index.js",
   "scripts": {
     "macos": "react-native run-macos",
+    "macos:release": "cd macos && xcodebuild -workspace desktop.xcworkspace -scheme desktop-macOS -configuration Release -derivedDataPath build",
+    "macos:clean": "rm -rf macos/build",
+    "macos:pod": "cd macos && pod install",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",

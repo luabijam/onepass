@@ -1,0 +1,55 @@
+{
+  "name": "onepass",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cross-platform password manager with React Native",
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -r --parallel dev",
+    "dev:vault": "pnpm --filter @onepass/vault-core dev",
+    "dev:mobile": "pnpm --filter @onepass/mobile dev",
+    "dev:desktop": "pnpm --filter @onepass/desktop dev",
+    "test": "pnpm -r test",
+    "test:vault": "pnpm --filter @onepass/vault-core test",
+    "lint": "eslint packages/*/src --ext .ts,.tsx",
+    "lint:fix": "eslint packages/*/src --ext .ts,.tsx --fix",
+    "format": "prettier --write \"packages/*/src/**/*.{ts,tsx}\"",
+    "format:check": "prettier --check \"packages/*/src/**/*.{ts,tsx}\"",
+    "typecheck": "pnpm -r typecheck",
+    "clean": "pnpm -r clean && rm -rf node_modules",
+    "android": "pnpm --filter @onepass/mobile android",
+    "android:release": "pnpm --filter @onepass/mobile android:release",
+    "ios": "pnpm --filter @onepass/mobile ios",
+    "macos": "pnpm --filter @onepass/desktop macos",
+    "macos:release": "pnpm --filter @onepass/desktop macos:release"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.24",
+    "@typescript-eslint/eslint-plugin": "^7.1.0",
+    "@typescript-eslint/parser": "^7.1.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.34.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^9.0.11",
+    "jest": "^29.7.0",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.3.3"
+  },
+  "packageManager": "pnpm@8.15.4",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yaml}": [
+      "prettier --write"
+    ]
+  }
+}
