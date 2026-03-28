@@ -55,8 +55,12 @@ jobs:
 
       - name: Verify node_modules
         run: |
+          echo "Checking node_modules structure..."
           ls -la packages/mobile/node_modules/@react-native/ || echo "Directory not found"
           ls -la packages/mobile/node_modules/@react-native/gradle-plugin/ || echo "gradle-plugin not found"
+          echo "---"
+          echo "Checking root node_modules..."
+          ls -la node_modules/@react-native/ || echo "Root @react-native not found"
 
       - name: Build Android APK
         working-directory: packages/mobile
