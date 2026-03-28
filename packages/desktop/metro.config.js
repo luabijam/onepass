@@ -20,6 +20,8 @@ const config = {
     ],
     extraNodeModules: {
       '@onepass/vault-core': path.resolve(__dirname, '../vault-core'),
+      // Polyfill for Node.js crypto module
+      crypto: require.resolve('react-native-quick-crypto'),
     },
   },
 };
