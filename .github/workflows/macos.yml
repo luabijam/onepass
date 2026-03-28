@@ -39,11 +39,11 @@ jobs:
 
       - name: Install CocoaPods dependencies
         run: |
-          # Fix pnpm symlinks for CocoaPods - dereference all symlinks
-          cd $GITHUB_WORKSPACE
-          find node_modules -type l -exec sh -c 'link="$1"; target="$(readlink "$link")"; if [ -d "$target" ]; then rm -rf "$link" && cp -r "$target" "$link"; fi' _ {} \; || true
-          cd packages/desktop/macos
-          pod install
+          # Fix pnpm symlinks for CocoaPods - clean install approach
+          cd $GITHUB_WORKSPACE/packages/desktop/macos
+          rm -rf Pods Podfile.lock
+          # Use node to resolve react-native path properly
+          pod install --repo-update
 
       - name: Build macOS app
         run: pnpm run build:macos:release
