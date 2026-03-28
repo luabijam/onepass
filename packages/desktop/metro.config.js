@@ -11,11 +11,16 @@ const config = {
   watchFolders: [
     // Include root node_modules for pnpm monorepo
     path.resolve(__dirname, '../../node_modules'),
+    // Include workspace packages
+    path.resolve(__dirname, '../vault-core'),
   ],
   resolver: {
     nodeModulesPaths: [
       path.resolve(__dirname, '../../node_modules'),
     ],
+    extraNodeModules: {
+      '@onepass/vault-core': path.resolve(__dirname, '../vault-core'),
+    },
   },
 };
 
