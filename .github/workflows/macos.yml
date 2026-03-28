@@ -38,8 +38,8 @@ jobs:
       - name: Install CocoaPods dependencies
         working-directory: packages/desktop/macos
         run: |
-          rm -rf Pods Podfile.lock
-          pod install --repo-update
+          bundle install --path vendor/bundle
+          bundle exec pod install --repo-update
 
       - name: Build macOS app
         run: npm run build:macos:release
