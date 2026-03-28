@@ -21,9 +21,6 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -32,21 +29,22 @@ jobs:
           working-directory: packages/desktop
 
       - name: Install dependencies
-        run: pnpm install
+        run: |
+          # Use npm instead of pnpm to avoid symlink issues with CocoaPods
+          npm install -g npm
+          npm install
 
       - name: Build vault-core
-        run: pnpm run build:release
+        run: npm run build:release
 
       - name: Install CocoaPods dependencies
+        working-directory: packages/desktop/macos
         run: |
-          # Fix pnpm symlinks for CocoaPods - clean install approach
-          cd $GITHUB_WORKSPACE/packages/desktop/macos
           rm -rf Pods Podfile.lock
-          # Use node to resolve react-native path properly
           pod install --repo-update
 
       - name: Build macOS app
-        run: pnpm run build:macos:release
+        run: npm run build:macos:release
 
       - name: Create DMG (optional)
         run: |
