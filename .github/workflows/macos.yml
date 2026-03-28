@@ -37,24 +37,9 @@ jobs:
       - name: Build vault-core
         run: pnpm run build:release
 
-      - name: Fix symlinks and Install CocoaPods dependencies
+      - name: Install CocoaPods dependencies
         working-directory: packages/desktop/macos
         run: |
-          # Remove all symlinks in node_modules and copy actual content
-          # This fixes the CocoaPods "pathname contains null byte" issue with pnpm
-          cd ../../..
-          find node_modules -type l -print0 | while IFS= read -r -d '' link; do
-            if [ -L "$link" ]; then
-              target=$(readlink "$link")
-              if [ -e "$target" ]; then
-                rm -f "$link"
-                cp -r "$target" "$link"
-              fi
-            fi
-          done || true
-          # Re-run pnpm to fix any broken module resolutions
-          pnpm install --offline
-          cd packages/desktop/macos
           rm -rf Pods Podfile.lock
           pod install --repo-update
 
