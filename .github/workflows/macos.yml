@@ -40,8 +40,10 @@ jobs:
       - name: Install CocoaPods dependencies
         working-directory: packages/desktop/macos
         run: |
-          # Fix pnpm symlinks for CocoaPods
-          find ../node_modules -type l -exec sh -c 'cp -r "$(readlink -f "$1")" "$1"' _ {} \; || true
+          # Fix pnpm symlinks for CocoaPods - dereference all symlinks
+          cd ../..
+          find node_modules -type l -exec sh -c 'link="$1"; target="$(readlink "$link")"; if [ -d "$target" ]; then rm -rf "$link" && cp -r "$target" "$link"; fi' _ {} \; || true
+          cd packages/desktop/macos
           pod install
 
       - name: Build macOS app
