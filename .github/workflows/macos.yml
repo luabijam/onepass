@@ -30,12 +30,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          # Use npm instead of pnpm to avoid symlink issues with CocoaPods
-          npm install -g npm
-          npm install
+          # Use yarn instead of pnpm to avoid symlink issues with CocoaPods
+          npm install -g yarn
+          yarn install
 
       - name: Build vault-core
-        run: npm run build:release
+        run: yarn build:release
 
       - name: Install CocoaPods dependencies
         working-directory: packages/desktop/macos
@@ -44,7 +44,7 @@ jobs:
           pod install --repo-update
 
       - name: Build macOS app
-        run: npm run build:macos:release
+        run: yarn build:macos:release
 
       - name: Create DMG (optional)
         run: |
