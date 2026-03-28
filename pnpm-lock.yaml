@@ -298,6 +298,7 @@ importers:
       react-native-quick-sqlite:
         specifier: ^8.0.0
         version: 8.2.7(react-native@0.76.6)(react@18.3.1)(sql.js@1.14.1)
+    optionalDependencies:
       sql.js:
         specifier: ^1.10.3
         version: 1.14.1
@@ -8429,6 +8430,7 @@ packages:
 
   /sql.js@1.14.1:
     resolution: {integrity: sha512-gcj8zBWU5cFsi9WUP+4bFNXAyF1iRpA3LLyS/DP5xlrNzGmPIizUeBggKa8DbDwdqaKwUcTEnChtd2grWo/x/A==}
+    requiresBuild: true
     dev: false
 
   /stack-utils@2.0.6:

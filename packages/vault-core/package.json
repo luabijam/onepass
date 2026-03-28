@@ -19,7 +19,8 @@
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist"
   },
-  "dependencies": {
+  "dependencies": {},
+  "optionalDependencies": {
     "sql.js": "^1.10.3"
   },
   "peerDependencies": {
