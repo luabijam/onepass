@@ -40,6 +40,9 @@ jobs:
       - name: Install CocoaPods dependencies
         working-directory: packages/desktop/macos
         run: |
+          # Fix pnpm symlinks issue with CocoaPods
+          # Remove the .pnpm store which contains symlinks that cause issues
+          rm -rf ../../../node_modules/.pnpm
           rm -rf Pods Podfile.lock
           pod install --repo-update
 
