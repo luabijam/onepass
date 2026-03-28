@@ -1,3 +1,4 @@
+const path = require('path');
 const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
 
 /**
@@ -7,6 +8,10 @@ const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
  * @type {import('metro-config').MetroConfig}
  */
 const config = {
+  watchFolders: [
+    // Include root node_modules for npm workspaces
+    path.resolve(__dirname, '../../node_modules'),
+  ],
   resolver: {
     extraNodeModules: {
       // Polyfills for Node.js core modules in React Native
