@@ -52,6 +52,8 @@ jobs:
               fi
             fi
           done || true
+          # Re-run pnpm to fix any broken module resolutions
+          pnpm install --offline
           cd packages/desktop/macos
           rm -rf Pods Podfile.lock
           pod install --repo-update
