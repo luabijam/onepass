@@ -295,6 +295,9 @@ importers:
 
   packages/vault-core:
     dependencies:
+      react-native-quick-sqlite:
+        specifier: ^8.0.0
+        version: 8.2.7(react-native@0.76.6)(react@18.3.1)(sql.js@1.14.1)
       sql.js:
         specifier: ^1.10.3
         version: 1.14.1
@@ -2688,6 +2691,23 @@ packages:
       nullthrows: 1.1.1
       react: 18.3.1
       react-native: 0.76.6(@babel/core@7.29.0)(@babel/preset-env@7.29.2)(@types/react@18.3.28)(react@18.3.1)
+
+  /@react-native/virtualized-lists@0.76.6(react-native@0.76.6)(react@18.3.1):
+    resolution: {integrity: sha512-0HUWVwJbRq1BWFOu11eOWGTSmK9nMHhoMPyoI27wyWcl/nqUx7HOxMbRVq0DsTCyATSMPeF+vZ6o1REapcNWKw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@types/react': ^18.2.6
+      react: '*'
+      react-native: '*'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      invariant: 2.2.4
+      nullthrows: 1.1.1
+      react: 18.3.1
+      react-native: 0.76.6(@babel/core@7.29.0)(@babel/preset-env@7.29.2)(react@18.3.1)
+    dev: false
 
   /@react-navigation/core@7.17.0(react@18.3.1):
     resolution: {integrity: sha512-E4Kr1PRrhKiVn1RdMdPIG1rCfrKh+HiVJ2smdLsh9D95Q2z0a9dGE9yHpRQ2pAUiiwOfgloLqegkPb8g+TcCBA==}
@@ -7627,7 +7647,38 @@ packages:
     dependencies:
       react: 18.3.1
       react-native: 0.76.6(@babel/core@7.29.0)(@babel/preset-env@7.29.2)(@types/react@18.3.28)(react@18.3.1)
-      typeorm: 0.3.28
+      typeorm: 0.3.28(sql.js@1.14.1)
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - babel-plugin-macros
+      - better-sqlite3
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+    dev: false
+
+  /react-native-quick-sqlite@8.2.7(react-native@0.76.6)(react@18.3.1)(sql.js@1.14.1):
+    resolution: {integrity: sha512-gUW00ic8yM347Uz68bq0lQLKKWqu+4g2j2kIvjif/IySAoQjXj9p6RDuezfZPQEmfslAJQio8Xn1ORMkeZ4b1Q==}
+    requiresBuild: true
+    peerDependencies:
+      react: '>=17.0.0'
+      react-native: '>=0.74.0'
+    dependencies:
+      react: 18.3.1
+      react-native: 0.76.6(@babel/core@7.29.0)(@babel/preset-env@7.29.2)(react@18.3.1)
+      typeorm: 0.3.28(sql.js@1.14.1)
     transitivePeerDependencies:
       - '@google-cloud/spanner'
       - '@sap/hana-client'
@@ -7739,6 +7790,66 @@ packages:
       - encoding
       - supports-color
       - utf-8-validate
+
+  /react-native@0.76.6(@babel/core@7.29.0)(@babel/preset-env@7.29.2)(react@18.3.1):
+    resolution: {integrity: sha512-AsRi+ud6v6ADH7ZtSOY42kRB4nbM0KtSu450pGO4pDudl4AEK/AF96ai88snb2/VJJSGGa/49QyJVFXxz/qoFg==}
+    engines: {node: '>=18'}
+    hasBin: true
+    peerDependencies:
+      '@types/react': ^18.2.6
+      react: ^18.2.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@jest/create-cache-key-function': 29.7.0
+      '@react-native/assets-registry': 0.76.6
+      '@react-native/codegen': 0.76.6(@babel/preset-env@7.29.2)
+      '@react-native/community-cli-plugin': 0.76.6(@babel/core@7.29.0)(@babel/preset-env@7.29.2)
+      '@react-native/gradle-plugin': 0.76.6
+      '@react-native/js-polyfills': 0.76.6
+      '@react-native/normalize-colors': 0.76.6
+      '@react-native/virtualized-lists': 0.76.6(react-native@0.76.6)(react@18.3.1)
+      abort-controller: 3.0.0
+      anser: 1.4.10
+      ansi-regex: 5.0.1
+      babel-jest: 29.7.0(@babel/core@7.29.0)
+      babel-plugin-syntax-hermes-parser: 0.23.1
+      base64-js: 1.5.1
+      chalk: 4.1.2
+      commander: 12.1.0
+      event-target-shim: 5.0.1
+      flow-enums-runtime: 0.0.6
+      glob: 7.2.3
+      invariant: 2.2.4
+      jest-environment-node: 29.7.0
+      jsc-android: 250231.0.0
+      memoize-one: 5.2.1
+      metro-runtime: 0.81.5
+      metro-source-map: 0.81.5
+      mkdirp: 0.5.6
+      nullthrows: 1.1.1
+      pretty-format: 29.7.0
+      promise: 8.3.0
+      react: 18.3.1
+      react-devtools-core: 5.3.2
+      react-refresh: 0.14.2
+      regenerator-runtime: 0.13.11
+      scheduler: 0.24.0-canary-efb381bbf-20230505
+      semver: 7.7.4
+      stacktrace-parser: 0.1.11
+      whatwg-fetch: 3.6.20
+      ws: 6.2.3
+      yargs: 17.7.2
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@babel/preset-env'
+      - '@react-native-community/cli-server-api'
+      - bufferutil
+      - encoding
+      - supports-color
+      - utf-8-validate
+    dev: false
 
   /react-refresh@0.14.2:
     resolution: {integrity: sha512-jCvmsr+1IUSMUyzOkRcvnVbX3ZYC6g9TDrDbFuFmRDq7PD4yaGbLKNQL6k2jnArV8hjYxh7hVhAZB6s9HDGpZA==}
@@ -8816,7 +8927,7 @@ packages:
       reflect.getprototypeof: 1.0.10
     dev: true
 
-  /typeorm@0.3.28:
+  /typeorm@0.3.28(sql.js@1.14.1):
     resolution: {integrity: sha512-6GH7wXhtfq2D33ZuRXYwIsl/qM5685WZcODZb7noOOcRMteM9KF2x2ap3H0EBjnSV0VO4gNAfJT5Ukp0PkOlvg==}
     engines: {node: '>=16.13.0'}
     hasBin: true
@@ -8883,6 +8994,7 @@ packages:
       reflect-metadata: 0.2.2
       sha.js: 2.4.12
       sql-highlight: 6.1.0
+      sql.js: 1.14.1
       tslib: 2.8.1
       uuid: 11.1.0
       yargs: 17.7.2
