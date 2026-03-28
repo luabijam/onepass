@@ -57,7 +57,7 @@ jobs:
           pod install --repo-update
 
       - name: Build macOS app
-        run: yarn build:macos:release
+        run: pnpm run build:macos:release
 
       - name: Create DMG (optional)
         run: |
