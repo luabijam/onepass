@@ -372,8 +372,6 @@
 			};
 			name = Debug;
 		};
-			name = Debug;
-		};
 		5142015C2437B4B40078DB4F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
