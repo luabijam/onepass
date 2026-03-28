@@ -64,6 +64,22 @@ android {
         jniLibs {
             useLegacyPackaging = true
         }
+        pickFirst 'lib/arm64-v8a/libreact_nativemodule_core.so'
+        pickFirst 'lib/armeabi-v7a/libreact_nativemodule_core.so'
+        pickFirst 'lib/x86/libreact_nativemodule_core.so'
+        pickFirst 'lib/x86_64/libreact_nativemodule_core.so'
+        pickFirst 'lib/arm64-v8a/libturbomodulejsijni.so'
+        pickFirst 'lib/armeabi-v7a/libturbomodulejsijni.so'
+        pickFirst 'lib/x86/libturbomodulejsijni.so'
+        pickFirst 'lib/x86_64/libturbomodulejsijni.so'
+        pickFirst 'lib/arm64-v8a/libfbjni.so'
+        pickFirst 'lib/armeabi-v7a/libfbjni.so'
+        pickFirst 'lib/x86/libfbjni.so'
+        pickFirst 'lib/x86_64/libfbjni.so'
+        pickFirst 'lib/arm64-v8a/libjsi.so'
+        pickFirst 'lib/armeabi-v7a/libjsi.so'
+        pickFirst 'lib/x86/libjsi.so'
+        pickFirst 'lib/x86_64/libjsi.so'
     }
 
     compileOptions {
@@ -79,10 +95,4 @@ android {
 dependencies {
     implementation("com.facebook.react:react-android")
     implementation("com.facebook.react:hermes-android")
-
-    if (hermesEnabled.toBoolean()) {
-        implementation("com.facebook.react:hermes-android")
-    } else {
-        implementation jscFlavor
-    }
 }
