@@ -1,0 +1,73 @@
+name: Build macOS App
+
+on:
+  push:
+    branches: [main, master]
+    tags: ['v*']
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build-macos:
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+          working-directory: packages/desktop
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build vault-core
+        run: pnpm run build:release
+
+      - name: Install CocoaPods dependencies
+        working-directory: packages/desktop/macos
+        run: pod install
+
+      - name: Build macOS app
+        run: pnpm run build:macos:release
+
+      - name: Create DMG (optional)
+        run: |
+          APP_PATH="packages/desktop/macos/build/Build/Products/Release/OnePass.app"
+          if [ -d "$APP_PATH" ]; then
+            mkdir -p dist
+            hdiutil create -volname "OnePass" \
+              -srcfolder "$APP_PATH" \
+              -ov -format UDZO \
+              dist/OnePass-macOS.dmg
+          fi
+
+      - name: Upload .app artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: onepass-macos-app
+          path: packages/desktop/macos/build/Build/Products/Release/OnePass.app
+          retention-days: 30
+
+      - name: Upload DMG artifact
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: onepass-macos-dmg
+          path: dist/OnePass-macOS.dmg
+          retention-days: 30

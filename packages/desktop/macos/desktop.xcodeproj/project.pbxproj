@@ -400,8 +400,6 @@
 			};
 			name = Release;
 		};
-			name = Release;
-		};
 		83CBBA201A601CBA00E9B192 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
