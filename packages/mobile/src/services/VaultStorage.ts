@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 import type { Entry, Category } from '@onepass/vault-core';
 import { KeychainService } from './KeychainService';
 import { BiometricsService } from './BiometricsService';
@@ -84,13 +85,20 @@ export const VaultStorage = {
 
   async createVault(password: string): Promise<CreateVaultResult> {
     try {
+      console.log('[VaultStorage] Starting createVault...');
+
+      console.log('[VaultStorage] Generating salt...');
       const salt = generateSalt();
+      console.log('[VaultStorage] Salt generated');
+
+      console.log('[VaultStorage] Deriving key...');
       const key = await deriveKey(password, salt);
+      console.log('[VaultStorage] Key derived');
+
+      console.log('[VaultStorage] Computing hash...');
       const keyHash = await sha256(key);
       const passwordHash = uint8ArrayToBase64(keyHash);
-
-      await AsyncStorage.setItem(SALT_KEY, uint8ArrayToBase64(salt));
-      await AsyncStorage.setItem(PASSWORD_HASH_KEY, passwordHash);
+      console.log('[VaultStorage] Hash computed');
 
       const defaultCategories: Category[] = [
         {
@@ -102,24 +110,35 @@ export const VaultStorage = {
         },
       ];
 
-      await AsyncStorage.setItem(CATEGORIES_KEY, serializeCategories(defaultCategories));
-      await AsyncStorage.setItem(ENTRIES_KEY, serializeEntries([]));
+      console.log('[VaultStorage] Saving to AsyncStorage...');
+      await Promise.all([
+        AsyncStorage.setItem(SALT_KEY, uint8ArrayToBase64(salt)),
+        AsyncStorage.setItem(PASSWORD_HASH_KEY, passwordHash),
+        AsyncStorage.setItem(CATEGORIES_KEY, serializeCategories(defaultCategories)),
+        AsyncStorage.setItem(ENTRIES_KEY, serializeEntries([])),
+      ]);
+      console.log('[VaultStorage] All data saved');
 
       return { success: true, salt };
-    } catch {
-      return { success: false, error: 'Failed to create vault' };
+    } catch (error) {
+      console.error('[VaultStorage] createVault error:', error);
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      console.error('[VaultStorage] Error stack:', error instanceof Error ? error.stack : 'N/A');
+      Alert.alert('Vault Error', errorMsg);
+      return { success: false, error: `Failed to create vault: ${errorMsg}` };
     }
   },
 
   async unlock(password: string): Promise<UnlockResult> {
     try {
-      const saltBase64 = await AsyncStorage.getItem(SALT_KEY);
-      if (!saltBase64) {
-        return { success: false, error: 'Vault not initialized' };
-      }
+      const [saltBase64, storedHash, entriesJson, categoriesJson] = await Promise.all([
+        AsyncStorage.getItem(SALT_KEY),
+        AsyncStorage.getItem(PASSWORD_HASH_KEY),
+        AsyncStorage.getItem(ENTRIES_KEY),
+        AsyncStorage.getItem(CATEGORIES_KEY),
+      ]);
 
-      const storedHash = await AsyncStorage.getItem(PASSWORD_HASH_KEY);
-      if (!storedHash) {
+      if (!saltBase64 || !storedHash) {
         return { success: false, error: 'Vault not initialized' };
       }
 
@@ -131,9 +150,6 @@ export const VaultStorage = {
       if (computedHash !== storedHash) {
         return { success: false, error: 'Incorrect password' };
       }
-
-      const entriesJson = await AsyncStorage.getItem(ENTRIES_KEY);
-      const categoriesJson = await AsyncStorage.getItem(CATEGORIES_KEY);
 
       const entries = entriesJson ? deserializeEntries(entriesJson) : [];
       const categories = categoriesJson ? deserializeCategories(categoriesJson) : [];

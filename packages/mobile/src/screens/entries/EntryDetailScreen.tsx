@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { AppIcon } from '../../components';
 import { theme } from '../../theme';
@@ -20,6 +21,7 @@ export function EntryDetailScreen({
 }: EntryDetailScreenProps): React.JSX.Element {
   const [showPassword, setShowPassword] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const insets = useSafeAreaInsets();
 
   const copyToClipboard = (value: string, field: string) => {
     Clipboard.setString(value);
@@ -27,17 +29,38 @@ export function EntryDetailScreen({
     setTimeout(() => setCopiedField(null), 2000);
   };
 
+  const handleDelete = () => {
+    Alert.alert(
+      'Delete Entry',
+      'Are you sure you want to delete this entry? This action cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => {
+            if (onDeletePress) {
+              onDeletePress(entry.id);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + theme.spacing.sm }]}>
         <TouchableOpacity onPress={onBackPress} style={styles.backButton} testID="back-button">
           <AppIcon name="arrow-back" size={24} color={theme.colors.text.primary} />
         </TouchableOpacity>
-        <Text style={styles.title}>{entry.title}</Text>
+        <Text style={styles.title} numberOfLines={1}>
+          {entry.title}
+        </Text>
         <View style={styles.headerActions}>
           {onDeletePress && (
             <TouchableOpacity
-              onPress={() => onDeletePress(entry.id)}
+              onPress={handleDelete}
               style={styles.deleteButton}
               testID="delete-entry-button"
             >
@@ -172,8 +195,8 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: theme.typography.fontSize.lg,
-    paddingVertical: theme.typography.fontSize.md,
+    paddingHorizontal: theme.spacing.lg,
+    paddingBottom: theme.spacing.sm,
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.background.tertiary,
   },
@@ -183,7 +206,7 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: 1,
-    fontSize: theme.typography.fontSize.xxl,
+    fontSize: 20,
     fontWeight: theme.typography.fontWeight.semibold,
     color: theme.colors.text.primary,
   },
@@ -200,10 +223,10 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: theme.typography.fontSize.lg,
+    padding: theme.spacing.lg,
   },
   fieldContainer: {
-    marginBottom: theme.typography.fontSize.xl,
+    marginBottom: theme.spacing.xl,
   },
   fieldLabel: {
     fontSize: theme.typography.fontSize.xs,

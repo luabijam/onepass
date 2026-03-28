@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppIcon } from '../../components';
 import { theme } from '../../theme';
 
@@ -20,9 +21,11 @@ export function SettingsScreen({
   onManageCategories,
   onBackPress,
 }: SettingsScreenProps): React.JSX.Element {
+  const insets = useSafeAreaInsets();
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + theme.spacing.sm }]}>
         {onBackPress && (
           <TouchableOpacity onPress={onBackPress} style={styles.backButton} testID="back-button">
             <AppIcon name="arrow-back" size={24} color={theme.colors.text.primary} />
@@ -119,8 +122,8 @@ const styles = StyleSheet.create({
     marginRight: theme.spacing.sm,
   },
   title: {
-    fontSize: theme.typography.fontSize.xxxl,
-    fontWeight: theme.typography.fontWeight.bold,
+    fontSize: 28,
+    fontWeight: 'bold',
     color: theme.colors.text.primary,
   },
   content: {

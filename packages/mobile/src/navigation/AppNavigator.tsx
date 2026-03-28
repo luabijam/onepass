@@ -140,6 +140,16 @@ function MainNavigator(): React.JSX.Element {
           setEditingEntryId(undefined);
           setCurrentScreen(selectedEntryId ? 'EntryDetail' : 'EntryList');
         }}
+        onDelete={
+          editingEntryId
+            ? async () => {
+                await deleteEntry(editingEntryId);
+                setEditingEntryId(undefined);
+                setSelectedEntryId(null);
+                setCurrentScreen('EntryList');
+              }
+            : undefined
+        }
       />
     );
   }

@@ -6,8 +6,11 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  Image,
 } from 'react-native';
-import { AppIcon } from '../../components';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../theme';
 import { useVaultStore } from '../../stores';
 import { VaultStorage } from '../../services/VaultStorage';
@@ -17,6 +20,7 @@ export function UnlockScreen(): React.JSX.Element {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [biometricsAvailable, setBiometricsAvailable] = useState(false);
+  const insets = useSafeAreaInsets();
 
   const {
     isInitialized,
@@ -32,7 +36,9 @@ export function UnlockScreen(): React.JSX.Element {
   }, [initialize]);
 
   useEffect(() => {
-    VaultStorage.isBiometricsEnabled().then(setBiometricsAvailable);
+    VaultStorage.isBiometricsEnabled()
+      .then(setBiometricsAvailable)
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -106,50 +112,63 @@ export function UnlockScreen(): React.JSX.Element {
 
   return (
     <View style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>OnePass</Text>
-        <Text style={styles.subtitle}>
-          {isInitialized ? 'Unlock to continue' : 'Create a master password'}
-        </Text>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.content}
+      >
+        <View style={[styles.logoContainer, { marginTop: insets.top + 40 }]}>
+          <Image
+            source={require('../../assets/icon.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+          <Text style={styles.title}>OnePass</Text>
+          <Text style={styles.subtitle}>
+            {isInitialized ? 'Welcome back' : 'Create your vault'}
+          </Text>
+        </View>
 
         {error && (
           <View style={styles.errorContainer}>
-            <AppIcon name="error" size={16} color={theme.colors.status.error} />
             <Text style={styles.errorText}>{error}</Text>
           </View>
         )}
 
         <View style={styles.form}>
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor={theme.colors.text.secondary}
-            value={password}
-            onChangeText={(text) => {
-              setPassword(text);
-              setError(null);
-            }}
-            secureTextEntry
-            autoCapitalize="none"
-            autoCorrect={false}
-            testID="password-input"
-          />
-
-          {!isInitialized && (
+          <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              placeholder="Confirm password"
+              placeholder={isInitialized ? 'Enter password' : 'Create password'}
               placeholderTextColor={theme.colors.text.secondary}
-              value={confirmPassword}
+              value={password}
               onChangeText={(text) => {
-                setConfirmPassword(text);
+                setPassword(text);
                 setError(null);
               }}
               secureTextEntry
               autoCapitalize="none"
               autoCorrect={false}
-              testID="confirm-password-input"
+              testID="password-input"
             />
+          </View>
+
+          {!isInitialized && (
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="Confirm password"
+                placeholderTextColor={theme.colors.text.secondary}
+                value={confirmPassword}
+                onChangeText={(text) => {
+                  setConfirmPassword(text);
+                  setError(null);
+                }}
+                secureTextEntry
+                autoCapitalize="none"
+                autoCorrect={false}
+                testID="confirm-password-input"
+              />
+            </View>
           )}
 
           <TouchableOpacity
@@ -159,7 +178,7 @@ export function UnlockScreen(): React.JSX.Element {
             testID="unlock-button"
           >
             {isLoading ? (
-              <ActivityIndicator size="small" color={theme.colors.text.primary} />
+              <ActivityIndicator size="small" color="#fff" />
             ) : (
               <Text style={styles.buttonText}>{isInitialized ? 'Unlock' : 'Create Vault'}</Text>
             )}
@@ -172,12 +191,20 @@ export function UnlockScreen(): React.JSX.Element {
               disabled={isLoading}
               testID="biometric-button"
             >
-              <AppIcon name="fingerprint" size={24} color={theme.colors.accent.primary} />
-              <Text style={styles.biometricText}>Use Biometrics</Text>
+              <Text style={styles.biometricText}>Use Face ID / Fingerprint</Text>
             </TouchableOpacity>
           )}
         </View>
-      </View>
+
+        {!isInitialized && (
+          <View style={[styles.hintContainer, { paddingBottom: insets.bottom + 20 }]}>
+            <Text style={styles.hintText}>
+              Your master password encrypts all your data.{'\n'}
+              Make sure to remember it - it cannot be recovered.
+            </Text>
+          </View>
+        )}
+      </KeyboardAvoidingView>
     </View>
   );
 }
@@ -185,77 +212,92 @@ export function UnlockScreen(): React.JSX.Element {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: theme.colors.background.primary,
   },
   content: {
-    width: '85%',
-    maxWidth: 320,
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: theme.spacing.xl,
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 48,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: theme.spacing.lg,
+    borderRadius: 20,
   },
   title: {
-    fontSize: theme.typography.fontSize.xxxl + 8,
-    fontWeight: theme.typography.fontWeight.bold,
+    fontSize: 32,
+    fontWeight: 'bold',
     color: theme.colors.text.primary,
-    textAlign: 'center',
     marginBottom: theme.spacing.sm,
   },
   subtitle: {
     fontSize: theme.typography.fontSize.lg,
     color: theme.colors.text.secondary,
-    textAlign: 'center',
-    marginBottom: theme.typography.fontSize.xxl,
   },
   errorContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
     backgroundColor: theme.colors.status.errorBackground,
-    paddingHorizontal: theme.typography.fontSize.md,
-    paddingVertical: theme.spacing.sm,
-    borderRadius: theme.borderRadius.md,
-    marginBottom: theme.typography.fontSize.lg,
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.md,
+    borderRadius: theme.borderRadius.lg,
+    marginBottom: theme.spacing.lg,
   },
   errorText: {
     color: theme.colors.status.error,
     fontSize: theme.typography.fontSize.md,
-    marginLeft: theme.spacing.sm,
+    textAlign: 'center',
   },
   form: {
     width: '100%',
   },
-  input: {
+  inputContainer: {
     backgroundColor: theme.colors.background.secondary,
-    borderRadius: theme.borderRadius.md,
-    paddingHorizontal: theme.typography.fontSize.md,
-    paddingVertical: theme.typography.fontSize.lg,
+    borderRadius: theme.borderRadius.lg,
+    marginBottom: theme.spacing.md,
+    paddingHorizontal: theme.spacing.lg,
+  },
+  input: {
+    paddingVertical: theme.spacing.lg,
     fontSize: theme.typography.fontSize.lg,
     color: theme.colors.text.primary,
-    marginBottom: theme.spacing.md,
   },
   button: {
     backgroundColor: theme.colors.accent.primary,
-    borderRadius: theme.borderRadius.md,
-    paddingVertical: theme.typography.fontSize.lg,
+    borderRadius: theme.borderRadius.lg,
+    paddingVertical: theme.spacing.lg,
     alignItems: 'center',
-    marginTop: theme.spacing.sm,
+    marginTop: theme.spacing.md,
   },
   buttonDisabled: {
     opacity: 0.6,
   },
   buttonText: {
-    color: theme.colors.text.primary,
+    color: '#fff',
     fontSize: theme.typography.fontSize.lg,
     fontWeight: theme.typography.fontWeight.semibold,
   },
   biometricButton: {
-    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: theme.typography.fontSize.xl,
+    marginTop: theme.spacing.xl,
+    padding: theme.spacing.md,
   },
   biometricText: {
     color: theme.colors.accent.primary,
-    fontSize: theme.typography.fontSize.lg,
-    marginLeft: theme.spacing.sm,
+    fontSize: theme.typography.fontSize.md,
+    fontWeight: theme.typography.fontWeight.medium,
+  },
+  hintContainer: {
+    marginTop: 32,
+    paddingHorizontal: theme.spacing.lg,
+  },
+  hintText: {
+    fontSize: theme.typography.fontSize.sm,
+    color: theme.colors.text.secondary,
+    textAlign: 'center',
+    lineHeight: 20,
   },
 });
