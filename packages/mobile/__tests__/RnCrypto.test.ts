@@ -14,45 +14,41 @@ import {
   GCM_TAG_LENGTH,
 } from '../src/services/RnCrypto';
 
-jest.mock('react-native-quick-crypto', () => {
-  return {
-    subtle: {
-      digest: async (_algorithm: unknown, data: Uint8Array) => {
-        const hash = new Uint8Array(32);
-        for (let i = 0; i < Math.min(data.length, 32); i++) {
-          hash[i] = data[i] ?? 0;
-        }
-        return hash;
-      },
-      importKey: async () => ({}),
-      sign: async () => new Uint8Array(32),
-      encrypt: async (_algorithm: unknown, _key: unknown, data: Uint8Array) => {
-        const tagLen = 16;
-        const tag = new Uint8Array(tagLen);
-        const result = new Uint8Array(data.length + tagLen);
-        result.set(data, 0);
-        result.set(tag, data.length);
-        return result;
-      },
-      decrypt: async (_algorithm: unknown, _key: unknown, data: Uint8Array) => {
-        const tagLen = 16;
-        return data.slice(0, -tagLen);
-      },
-    },
-    getRandomValues: (array: Uint8Array) => {
-      for (let i = 0; i < array.length; i++) {
-        array[i] = Math.floor(Math.random() * 256);
+// Mock Web Crypto API for tests
+const mockCrypto = {
+  subtle: {
+    digest: async (_algorithm: unknown, data: Uint8Array) => {
+      const hash = new Uint8Array(32);
+      for (let i = 0; i < Math.min(data.length, 32); i++) {
+        hash[i] = data[i] ?? 0;
       }
-      return array;
+      return hash;
     },
-    randomBytes: (size: number) => {
-      const buffer = new Uint8Array(size);
-      for (let i = 0; i < size; i++) {
-        buffer[i] = Math.floor(Math.random() * 256);
-      }
-      return buffer;
+    importKey: async () => ({}),
+    sign: async () => new Uint8Array(32),
+    encrypt: async (_algorithm: unknown, _key: unknown, data: Uint8Array) => {
+      const tagLen = 16;
+      const tag = new Uint8Array(tagLen);
+      const result = new Uint8Array(data.length + tagLen);
+      result.set(data, 0);
+      result.set(tag, data.length);
+      return result;
     },
-  };
+    decrypt: async (_algorithm: unknown, _key: unknown, data: Uint8Array) => {
+      const tagLen = 16;
+      return data.slice(0, -tagLen);
+    },
+  },
+  getRandomValues: (array: Uint8Array) => {
+    for (let i = 0; i < array.length; i++) {
+      array[i] = Math.floor(Math.random() * 256);
+    }
+    return array;
+  },
+};
+
+Object.defineProperty(globalThis, 'crypto', {
+  value: mockCrypto,
 });
 
 describe('RnCrypto', () => {

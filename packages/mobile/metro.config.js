@@ -13,9 +13,6 @@ const config = {
     ],
     extraNodeModules: {
       '@onepass/vault-core': path.resolve(workspaceRoot, 'packages/vault-core'),
-      crypto: require.resolve('react-native-quick-crypto'),
-      stream: require.resolve('stream-browserify'),
-      os: path.resolve(projectRoot, 'src/polyfills/os.js'),
     },
   },
 };
