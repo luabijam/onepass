@@ -2,26 +2,20 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { AppIcon } from '../../components';
 import { theme } from '../../theme';
-
-interface Category {
-  id: string;
-  name: string;
-  icon: string;
-  color: string;
-  updatedAt: Date;
-  deletedAt?: Date;
-}
+import type { Category } from '@onepass/vault-core';
 
 interface CategoryListScreenProps {
   categories: Category[];
   onCategoryPress: (categoryId: string) => void;
   onCreatePress: () => void;
+  onBackPress?: () => void;
 }
 
 export function CategoryListScreen({
   categories,
   onCategoryPress,
   onCreatePress,
+  onBackPress,
 }: CategoryListScreenProps): React.JSX.Element {
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -61,6 +55,14 @@ export function CategoryListScreen({
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        {onBackPress && (
+          <TouchableOpacity onPress={onBackPress} style={styles.backButton} testID="back-button">
+            <AppIcon name="arrow-back" size={24} color={theme.colors.text.primary} />
+          </TouchableOpacity>
+        )}
+        <Text style={styles.headerTitle}>Categories</Text>
+      </View>
       <View style={styles.searchContainer}>
         <AppIcon name="search" size={20} color={theme.colors.text.secondary} />
         <TextInput
@@ -89,6 +91,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.background.primary,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: theme.typography.fontSize.lg,
+    paddingTop: theme.typography.fontSize.lg,
+    paddingBottom: theme.spacing.sm,
+  },
+  backButton: {
+    padding: theme.spacing.sm,
+    marginRight: theme.spacing.sm,
+  },
+  headerTitle: {
+    fontSize: theme.typography.fontSize.xxxl,
+    fontWeight: theme.typography.fontWeight.bold,
+    color: theme.colors.text.primary,
   },
   searchContainer: {
     flexDirection: 'row',

@@ -2,18 +2,33 @@ import React from 'react';
 import { render, screen } from '@testing-library/react-native';
 import { AppNavigator } from '../src/navigation/AppNavigator';
 
-jest.mock('@react-navigation/native', () => ({
-  NavigationContainer: ({ children }: { children: React.ReactNode }) => children,
+jest.mock('../src/stores', () => ({
+  useVaultStore: jest.fn(() => ({
+    isUnlocked: false,
+    isInitialized: false,
+    isLoading: false,
+    error: null,
+    initialize: jest.fn(),
+    unlock: jest.fn(),
+    createVault: jest.fn(),
+    clearError: jest.fn(),
+    entries: [],
+    categories: [],
+    getEntry: jest.fn(),
+    getCategory: jest.fn(),
+    addEntry: jest.fn(),
+    updateEntry: jest.fn(),
+    deleteEntry: jest.fn(),
+    addCategory: jest.fn(),
+    updateCategory: jest.fn(),
+    deleteCategory: jest.fn(),
+  })),
 }));
 
-jest.mock('@react-navigation/native-stack', () => ({
-  createNativeStackNavigator: () => ({
-    Navigator: ({ children }: { children: React.ReactNode }) => children,
-    Screen: ({ component: Component }: { component: React.ComponentType }) => {
-      const MockComponent = Component;
-      return <MockComponent />;
-    },
-  }),
+jest.mock('../src/services/VaultStorage', () => ({
+  VaultStorage: {
+    isBiometricsEnabled: jest.fn().mockResolvedValue(false),
+  },
 }));
 
 describe('AppNavigator', () => {

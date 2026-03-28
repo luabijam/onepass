@@ -3,31 +3,20 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { AppIcon } from '../../components';
 import { theme } from '../../theme';
-
-interface Entry {
-  id: string;
-  title: string;
-  username: string;
-  password: string;
-  url?: string;
-  notes?: string;
-  categoryId: string;
-  isFavorite: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date;
-}
+import type { Entry } from '@onepass/vault-core';
 
 interface EntryDetailScreenProps {
   entry: Entry;
   onEditPress: (entryId: string) => void;
   onBackPress: () => void;
+  onDeletePress?: (entryId: string) => void;
 }
 
 export function EntryDetailScreen({
   entry,
   onEditPress,
   onBackPress,
+  onDeletePress,
 }: EntryDetailScreenProps): React.JSX.Element {
   const [showPassword, setShowPassword] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
@@ -45,13 +34,24 @@ export function EntryDetailScreen({
           <AppIcon name="arrow-back" size={24} color={theme.colors.text.primary} />
         </TouchableOpacity>
         <Text style={styles.title}>{entry.title}</Text>
-        <TouchableOpacity
-          onPress={() => onEditPress(entry.id)}
-          style={styles.editButton}
-          testID="edit-entry-button"
-        >
-          <AppIcon name="edit" size={24} color={theme.colors.accent.primary} />
-        </TouchableOpacity>
+        <View style={styles.headerActions}>
+          {onDeletePress && (
+            <TouchableOpacity
+              onPress={() => onDeletePress(entry.id)}
+              style={styles.deleteButton}
+              testID="delete-entry-button"
+            >
+              <AppIcon name="delete" size={24} color={theme.colors.status.error} />
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity
+            onPress={() => onEditPress(entry.id)}
+            style={styles.editButton}
+            testID="edit-entry-button"
+          >
+            <AppIcon name="edit" size={24} color={theme.colors.accent.primary} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={styles.content}>
@@ -186,6 +186,14 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.fontSize.xxl,
     fontWeight: theme.typography.fontWeight.semibold,
     color: theme.colors.text.primary,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  deleteButton: {
+    padding: theme.spacing.sm,
+    marginRight: theme.spacing.sm,
   },
   editButton: {
     padding: theme.spacing.sm,

@@ -1,0 +1,36 @@
+{
+  "name": "OnePass Dev Container",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20",
+      "pnpmVersion": "latest"
+    },
+    "ghcr.io/devcontainers/features/android:1": {}
+  },
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y neovim tmux ripgrep fd-find && npm install -g opencode-ai && pnpm install",
+  "forwardPorts": [8081, 47200],
+  "remoteEnv": {
+    "EDITOR": "nvim"
+  },
+  "remoteUser": "vscode",
+  "mounts": [
+    "source=onepass-node-modules,target=${containerWorkspaceFolder}/node_modules,type=volume",
+    "source=onepass-pnpm-store,target=/home/vscode/.local/share/pnpm/store,type=volume"
+  ],
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "typescript.preferences.importModuleSpecifier": "relative",
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "ms-vscode.vscode-typescript-next"
+      ]
+    }
+  }
+}

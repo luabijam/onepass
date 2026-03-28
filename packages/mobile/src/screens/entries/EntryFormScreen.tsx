@@ -2,20 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { AppIcon, PasswordGenerator } from '../../components';
 import { theme } from '../../theme';
-
-interface Entry {
-  id: string;
-  title: string;
-  username: string;
-  password: string;
-  url?: string;
-  notes?: string;
-  categoryId: string;
-  isFavorite: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date;
-}
+import type { Entry } from '@onepass/vault-core';
 
 interface EntryFormData {
   title: string;

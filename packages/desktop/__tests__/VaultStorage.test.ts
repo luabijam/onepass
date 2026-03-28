@@ -3,9 +3,20 @@ import * as path from 'path';
 import * as os from 'os';
 import {VaultStorage} from '../src/services/VaultStorage';
 import {KeychainService} from '../src/services/KeychainService';
+import {BiometricsService} from '../src/services/BiometricsService';
 
 jest.mock('../src/services/KeychainService');
 jest.mock('../src/services/BiometricsService');
+
+const createMockBiometricsService = () => ({
+  isAvailable: jest.fn().mockResolvedValue(true),
+  getBiometryType: jest.fn().mockResolvedValue('fingerprint'),
+  authenticate: jest.fn().mockResolvedValue(true),
+  hasBiometricKey: jest.fn().mockResolvedValue(true),
+  createBiometricKey: jest.fn().mockResolvedValue('public-key-base64'),
+  deleteBiometricKey: jest.fn().mockResolvedValue(true),
+  createSignature: jest.fn().mockResolvedValue('signature-base64'),
+});
 
 describe('VaultStorage', () => {
   let mockKeychainStore: Record<string, string> = {};
@@ -53,6 +64,9 @@ describe('VaultStorage', () => {
 
     (KeychainService as jest.Mock).mockImplementation(
       createMockKeychainService,
+    );
+    (BiometricsService as jest.Mock).mockImplementation(
+      createMockBiometricsService,
     );
 
     const vaultDir = getMockVaultDir();
@@ -250,6 +264,157 @@ describe('VaultStorage', () => {
       expect(mockKeychainStore.password_hash).toBeUndefined();
       expect(mockKeychainStore.biometric_key).toBeUndefined();
       expect(mockKeychainStore.sync_token).toBeUndefined();
+    });
+  });
+
+  describe('enableBiometrics', () => {
+    it('returns false when vault not initialized', async () => {
+      const result = await VaultStorage.enableBiometrics('password');
+      expect(result).toBe(false);
+    });
+
+    it('stores derived key in keychain for biometric unlock', async () => {
+      const password = 'test-password';
+      await VaultStorage.createVault(password);
+
+      const result = await VaultStorage.enableBiometrics(password);
+
+      expect(result).toBe(true);
+      expect(mockKeychainStore.biometric_key).toBeDefined();
+    });
+
+    it('returns false on error', async () => {
+      const password = 'test-password';
+      await VaultStorage.createVault(password);
+
+      const MockedKeychainService = KeychainService as jest.Mock;
+      MockedKeychainService.mockImplementation(() => ({
+        ...createMockKeychainService(),
+        storePassword: jest.fn().mockRejectedValue(new Error('Keychain error')),
+      }));
+
+      const result = await VaultStorage.enableBiometrics(password);
+
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('unlockWithBiometrics', () => {
+    it('fails when biometrics not set up', async () => {
+      const mockBiometrics = createMockBiometricsService();
+      mockBiometrics.hasBiometricKey.mockResolvedValueOnce(false);
+      (BiometricsService as jest.Mock).mockImplementation(() => mockBiometrics);
+
+      const result = await VaultStorage.unlockWithBiometrics();
+
+      expect(result.success).toBe(false);
+      expect(result.error).toBe('Biometrics not set up');
+    });
+
+    it('fails when biometric key not found in keychain', async () => {
+      const password = 'test-password';
+      await VaultStorage.createVault(password);
+      await VaultStorage.enableBiometrics(password);
+
+      const newMockKeychainStore: Record<string, string> = {};
+      (KeychainService as jest.Mock).mockImplementation(() => ({
+        ...createMockKeychainService(),
+        getPassword: jest.fn((key: string) => {
+          return Promise.resolve(newMockKeychainStore[key] ?? null);
+        }),
+        hasPassword: jest.fn((key: string) => {
+          return Promise.resolve(key in newMockKeychainStore);
+        }),
+      }));
+
+      const result = await VaultStorage.unlockWithBiometrics();
+
+      expect(result.success).toBe(false);
+      expect(result.error).toBe('Biometric key not found');
+    });
+
+    it('succeeds with valid biometric authentication', async () => {
+      const password = 'test-password';
+      await VaultStorage.createVault(password);
+
+      const entry = {
+        id: 'test-entry',
+        title: 'Test Entry',
+        username: 'user',
+        password: 'pass',
+        categoryId: 'uncategorized',
+        isFavorite: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      await VaultStorage.saveEntries([entry]);
+
+      await VaultStorage.enableBiometrics(password);
+
+      const result = await VaultStorage.unlockWithBiometrics();
+
+      expect(result.success).toBe(true);
+      expect(result.entries).toHaveLength(1);
+      expect(result.entries?.[0]?.title).toBe('Test Entry');
+      expect(result.categories).toHaveLength(1);
+    });
+
+    it('returns empty entries and categories for new vault', async () => {
+      const password = 'test-password';
+      await VaultStorage.createVault(password);
+      await VaultStorage.enableBiometrics(password);
+
+      const result = await VaultStorage.unlockWithBiometrics();
+
+      expect(result.success).toBe(true);
+      expect(result.entries).toEqual([]);
+      expect(result.categories).toHaveLength(1);
+    });
+
+    it('returns salt after successful unlock', async () => {
+      const password = 'test-password';
+      await VaultStorage.createVault(password);
+      await VaultStorage.enableBiometrics(password);
+
+      const result = await VaultStorage.unlockWithBiometrics();
+
+      expect(result.success).toBe(true);
+      expect(result.salt).toBeDefined();
+      expect(result.salt?.length).toBe(16);
+    });
+  });
+
+  describe('isBiometricsEnabled', () => {
+    it('returns false when biometric key not stored', async () => {
+      const result = await VaultStorage.isBiometricsEnabled();
+      expect(result).toBe(false);
+    });
+
+    it('returns true when biometric key is stored', async () => {
+      const password = 'test-password';
+      await VaultStorage.createVault(password);
+      await VaultStorage.enableBiometrics(password);
+
+      const result = await VaultStorage.isBiometricsEnabled();
+      expect(result).toBe(true);
+    });
+  });
+
+  describe('disableBiometrics', () => {
+    it('removes biometric key from keychain', async () => {
+      const password = 'test-password';
+      await VaultStorage.createVault(password);
+      await VaultStorage.enableBiometrics(password);
+
+      expect(mockKeychainStore.biometric_key).toBeDefined();
+
+      await VaultStorage.disableBiometrics();
+
+      expect(mockKeychainStore.biometric_key).toBeUndefined();
+    });
+
+    it('does not throw when no biometric key exists', async () => {
+      await expect(VaultStorage.disableBiometrics()).resolves.not.toThrow();
     });
   });
 });

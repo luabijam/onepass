@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl:*)",
+      "Bash(git -C /Users/xiangweizeng/Desktop/onepass log:*)",
+      "Bash(bash scripts/start-server.sh:*)",
+      "Bash(awk:*)",
+      "Bash(grep:*)",
+      "Bash(python3:*)",
+      "Bash(git add:*)",
+      "Bash(/Users/xiangweizeng/Desktop/onepass/onepass_app/pubspec.yaml:*)",
+      "Bash(git commit:*)",
+      "Bash(git -C /Users/xiangweizeng/Desktop/onepass/onepass_app log --oneline)",
+      "Skill(ralph-loop:ralph-loop)",
+      "Bash(flutter:*)",
+      "Bash(git -C /Users/xiangweizeng/Desktop/onepass add docs/superpowers/plans/2026-03-22-devcontainer-setup.md)",
+      "Bash(git -C:*)",
+      "Bash(docker build:*)",
+      "Bash(export PATH=\"/Applications/Docker.app/Contents/Resources/bin:$PATH\")",
+      "Bash(printf:*)"
+    ]
+  }
+}

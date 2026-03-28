@@ -93,4 +93,4 @@
 - [x] 8.2 Document devcontainer setup for new developers
 - [x] 8.3 Document vault format for future reference
 - [x] 8.4 Document sync protocol for future reference
-- [ ] 8.5 Add MIT LICENSE file
+- [x] 8.5 Add MIT LICENSE file

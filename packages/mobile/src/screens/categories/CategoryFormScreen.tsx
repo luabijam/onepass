@@ -10,15 +10,7 @@ import {
 } from 'react-native';
 import { AppIcon } from '../../components';
 import { theme } from '../../theme';
-
-interface Category {
-  id: string;
-  name: string;
-  icon: string;
-  color: string;
-  updatedAt: Date;
-  deletedAt?: Date;
-}
+import type { Category } from '@onepass/vault-core';
 
 interface CategoryFormData {
   name: string;
@@ -30,6 +22,7 @@ interface CategoryFormScreenProps {
   category?: Category;
   onSave: (data: CategoryFormData) => void;
   onCancel: () => void;
+  onDeletePress?: () => void;
 }
 
 const DEFAULT_ICON = '📁';
@@ -56,6 +49,7 @@ export function CategoryFormScreen({
   category,
   onSave,
   onCancel,
+  onDeletePress,
 }: CategoryFormScreenProps): React.JSX.Element {
   const isEditMode = category !== undefined;
 
@@ -110,9 +104,20 @@ export function CategoryFormScreen({
           <AppIcon name="close" size={24} color={theme.colors.text.primary} />
         </TouchableOpacity>
         <Text style={styles.title}>{isEditMode ? 'Edit Category' : 'New Category'}</Text>
-        <TouchableOpacity onPress={handleSave} style={styles.saveButton} testID="save-button">
-          <AppIcon name="check" size={24} color={theme.colors.accent.primary} />
-        </TouchableOpacity>
+        <View style={styles.headerActions}>
+          {isEditMode && onDeletePress && (
+            <TouchableOpacity
+              onPress={onDeletePress}
+              style={styles.deleteButton}
+              testID="delete-button"
+            >
+              <AppIcon name="delete" size={24} color={theme.colors.status.error} />
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity onPress={handleSave} style={styles.saveButton} testID="save-button">
+            <AppIcon name="check" size={24} color={theme.colors.accent.primary} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {validationError && (
@@ -239,6 +244,14 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.fontSize.xxl,
     fontWeight: theme.typography.fontWeight.semibold,
     color: theme.colors.text.primary,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  deleteButton: {
+    padding: theme.spacing.sm,
+    marginRight: theme.spacing.sm,
   },
   saveButton: {
     padding: theme.spacing.sm,

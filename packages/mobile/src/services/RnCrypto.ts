@@ -1,4 +1,4 @@
-import crypto from 'react-native-quick-crypto';
+import 'react-native-get-random-values';
 
 const PBKDF2_ITERATIONS = 100000;
 const KEY_LENGTH = 32;
@@ -7,8 +7,17 @@ const GCM_IV_LENGTH = 12;
 const GCM_TAG_LENGTH = 16;
 const SYNC_TOKEN_MESSAGE = 'onepass-sync-token';
 
+function getCrypto(): Crypto {
+  if (typeof globalThis.crypto !== 'undefined') {
+    return globalThis.crypto;
+  }
+  throw new Error('Crypto API not available');
+}
+
 export function generateSalt(): Uint8Array {
-  return crypto.randomBytes(SALT_LENGTH);
+  const salt = new Uint8Array(SALT_LENGTH);
+  getCrypto().getRandomValues(salt);
+  return salt;
 }
 
 export async function deriveKey(password: string, salt: Uint8Array): Promise<Uint8Array> {
@@ -50,19 +59,25 @@ export async function deriveKey(password: string, salt: Uint8Array): Promise<Uin
 }
 
 export async function sha256(data: Uint8Array): Promise<Uint8Array> {
-  const hashBuffer = await crypto.subtle.digest({ name: 'SHA-256' }, data);
+  const crypto = getCrypto();
+  const hashBuffer = await crypto.subtle.digest({ name: 'SHA-256' }, data.buffer as ArrayBuffer);
   return new Uint8Array(hashBuffer);
 }
 
 export async function hmacSha256(key: Uint8Array, message: Uint8Array): Promise<Uint8Array> {
+  const crypto = getCrypto();
   const cryptoKey = await crypto.subtle.importKey(
     'raw',
-    key,
+    key.buffer as ArrayBuffer,
     { name: 'HMAC', hash: { name: 'SHA-256' } },
     false,
     ['sign']
   );
-  const signature = await crypto.subtle.sign({ name: 'HMAC' }, cryptoKey, message);
+  const signature = await crypto.subtle.sign(
+    { name: 'HMAC' },
+    cryptoKey,
+    message.buffer as ArrayBuffer
+  );
   return new Uint8Array(signature);
 }
 
@@ -77,15 +92,21 @@ export async function encryptAesGcm(
   plaintext: Uint8Array,
   key: Uint8Array
 ): Promise<{ ciphertext: Uint8Array; iv: Uint8Array; tag: Uint8Array }> {
-  const iv = crypto.randomBytes(GCM_IV_LENGTH);
-  const cryptoKey = await crypto.subtle.importKey('raw', key, { name: 'AES-GCM' }, false, [
-    'encrypt',
-  ]);
+  const crypto = getCrypto();
+  const iv = new Uint8Array(GCM_IV_LENGTH);
+  crypto.getRandomValues(iv);
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw',
+    key.buffer as ArrayBuffer,
+    { name: 'AES-GCM' },
+    false,
+    ['encrypt']
+  );
 
   const encrypted = await crypto.subtle.encrypt(
-    { name: 'AES-GCM', iv, tagLength: 128 },
+    { name: 'AES-GCM', iv: iv.buffer as ArrayBuffer, tagLength: 128 },
     cryptoKey,
-    plaintext
+    plaintext.buffer as ArrayBuffer
   );
 
   const encryptedArray = new Uint8Array(encrypted);
@@ -101,18 +122,23 @@ export async function decryptAesGcm(
   iv: Uint8Array,
   tag: Uint8Array
 ): Promise<Uint8Array> {
-  const cryptoKey = await crypto.subtle.importKey('raw', key, { name: 'AES-GCM' }, false, [
-    'decrypt',
-  ]);
+  const crypto = getCrypto();
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw',
+    key.buffer as ArrayBuffer,
+    { name: 'AES-GCM' },
+    false,
+    ['decrypt']
+  );
 
   const combined = new Uint8Array(ciphertext.length + tag.length);
   combined.set(ciphertext, 0);
   combined.set(tag, ciphertext.length);
 
   const decrypted = await crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv, tagLength: 128 },
+    { name: 'AES-GCM', iv: iv.buffer as ArrayBuffer, tagLength: 128 },
     cryptoKey,
-    combined
+    combined.buffer as ArrayBuffer
   );
 
   return new Uint8Array(decrypted);

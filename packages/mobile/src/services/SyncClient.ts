@@ -6,16 +6,23 @@ export interface SyncClientConfig {
   baseUrl: string;
   token: string;
   timeout?: number;
+  maxRetries?: number;
+  retryDelay?: number;
 }
 
 export class SyncError extends Error {
   constructor(
     message: string,
     public readonly code: string,
-    public readonly statusCode?: number
+    public readonly statusCode?: number,
+    public readonly retryCount?: number
   ) {
     super(message);
     this.name = 'SyncError';
+  }
+
+  get isRetryable(): boolean {
+    return this.code === 'network' || this.code === 'timeout' || this.code === 'server_error';
   }
 }
 
@@ -30,6 +37,8 @@ function isAxiosErrorLike(error: unknown): error is AxiosError {
 
 export class SyncClient {
   private client: AxiosInstance;
+  private maxRetries: number;
+  private retryDelay: number;
 
   constructor(config: SyncClientConfig) {
     this.client = axios.create({
@@ -40,26 +49,71 @@ export class SyncClient {
         'Content-Type': 'application/json',
       },
     });
+    this.maxRetries = config.maxRetries ?? 0;
+    this.retryDelay = config.retryDelay ?? 1000;
   }
 
   async pull(since?: Date): Promise<SyncResponse> {
-    try {
-      const params = since ? { since: since.getTime() } : {};
-      const response = await this.client.get<SyncResponse>('/sync', { params });
-      return deserializeSyncResponse(JSON.stringify(response.data));
-    } catch (error) {
-      throw this.handleError(error);
-    }
+    return this.withRetry(async () => {
+      try {
+        const params = since ? { since: since.getTime() } : {};
+        const response = await this.client.get<SyncResponse>('/sync', { params });
+        return deserializeSyncResponse(JSON.stringify(response.data));
+      } catch (error) {
+        throw this.handleError(error);
+      }
+    });
   }
 
   async push(payload: SyncPayload): Promise<SyncResponse> {
-    try {
-      const serializedPayload = serializeSyncPayload(payload);
-      const response = await this.client.post<SyncResponse>('/sync', JSON.parse(serializedPayload));
-      return deserializeSyncResponse(JSON.stringify(response.data));
-    } catch (error) {
-      throw this.handleError(error);
+    return this.withRetry(async () => {
+      try {
+        const serializedPayload = serializeSyncPayload(payload);
+        const response = await this.client.post<SyncResponse>(
+          '/sync',
+          JSON.parse(serializedPayload)
+        );
+        return deserializeSyncResponse(JSON.stringify(response.data));
+      } catch (error) {
+        throw this.handleError(error);
+      }
+    });
+  }
+
+  private async withRetry<T>(operation: () => Promise<T>): Promise<T> {
+    let lastError: SyncError | null = null;
+    let attempt = 0;
+
+    while (attempt <= this.maxRetries) {
+      try {
+        return await operation();
+      } catch (error) {
+        if (!(error instanceof SyncError)) {
+          throw error;
+        }
+
+        lastError = error;
+
+        if (!error.isRetryable || attempt === this.maxRetries) {
+          throw new SyncError(error.message, error.code, error.statusCode, attempt + 1);
+        }
+
+        const delay = this.retryDelay * Math.pow(2, attempt);
+        await this.sleep(delay);
+        attempt++;
+      }
     }
+
+    throw new SyncError(
+      lastError?.message ?? 'Unknown error',
+      lastError?.code ?? 'unknown',
+      lastError?.statusCode,
+      this.maxRetries + 1
+    );
+  }
+
+  private sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   private handleError(error: unknown): SyncError {
@@ -83,17 +137,13 @@ export class SyncClient {
     if (error.code === 'ERR_NETWORK' || error.message.includes('Network Error')) {
       return 'network';
     }
-    switch (error.response?.status) {
-      case 401:
-        return 'unauthorized';
-      case 403:
-        return 'forbidden';
-      case 404:
-        return 'not_found';
-      case 500:
-        return 'server_error';
-      default:
-        return 'http_error';
+    const status = error.response?.status;
+    if (status) {
+      if (status === 401) return 'unauthorized';
+      if (status === 403) return 'forbidden';
+      if (status === 404) return 'not_found';
+      if (status >= 500 && status < 600) return 'server_error';
     }
+    return 'http_error';
   }
 }

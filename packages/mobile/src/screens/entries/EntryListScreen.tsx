@@ -2,31 +2,20 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { AppIcon } from '../../components';
 import { theme } from '../../theme';
-
-interface Entry {
-  id: string;
-  title: string;
-  username: string;
-  password: string;
-  url?: string;
-  notes?: string;
-  categoryId: string;
-  isFavorite: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date;
-}
+import type { Entry } from '@onepass/vault-core';
 
 interface EntryListScreenProps {
   entries: Entry[];
   onEntryPress: (entryId: string) => void;
   onCreatePress: () => void;
+  onSettingsPress?: () => void;
 }
 
 export function EntryListScreen({
   entries,
   onEntryPress,
   onCreatePress,
+  onSettingsPress,
 }: EntryListScreenProps): React.JSX.Element {
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -69,6 +58,14 @@ export function EntryListScreen({
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Entries</Text>
+        {onSettingsPress && (
+          <TouchableOpacity onPress={onSettingsPress} testID="settings-button">
+            <AppIcon name="settings" size={24} color={theme.colors.text.primary} />
+          </TouchableOpacity>
+        )}
+      </View>
       <View style={styles.searchContainer}>
         <AppIcon name="search" size={20} color={theme.colors.text.secondary} />
         <TextInput
@@ -97,6 +94,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.background.primary,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: theme.typography.fontSize.lg,
+    paddingTop: theme.typography.fontSize.lg,
+    paddingBottom: theme.spacing.sm,
+  },
+  headerTitle: {
+    fontSize: theme.typography.fontSize.xxxl,
+    fontWeight: theme.typography.fontWeight.bold,
+    color: theme.colors.text.primary,
   },
   searchContainer: {
     flexDirection: 'row',

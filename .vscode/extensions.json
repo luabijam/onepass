@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "ms-vscode.vscode-typescript-next",
+    "msjsdiag.vscode-react-native",
+    "dsznajder.es7-react-js-snippets",
+    "bradlc.vscode-tailwindcss",
+    "ms-azuretools.vscode-docker",
+    "ms-vscode-remote.remote-containers",
+    "EditorConfig.EditorConfig",
+    "streetsidesoftware.code-spell-checker"
+  ]
+}

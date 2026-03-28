@@ -9,6 +9,7 @@ export interface SettingsScreenProps {
   onExportVault: () => void;
   onImportVault: () => void;
   onManageCategories: () => void;
+  onBackPress?: () => void;
 }
 
 export function SettingsScreen({
@@ -17,10 +18,16 @@ export function SettingsScreen({
   onExportVault,
   onImportVault,
   onManageCategories,
+  onBackPress,
 }: SettingsScreenProps): React.JSX.Element {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        {onBackPress && (
+          <TouchableOpacity onPress={onBackPress} style={styles.backButton} testID="back-button">
+            <AppIcon name="arrow-back" size={24} color={theme.colors.text.primary} />
+          </TouchableOpacity>
+        )}
         <Text style={styles.title}>Settings</Text>
       </View>
       <ScrollView style={styles.content}>
@@ -101,9 +108,15 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background.primary,
   },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: theme.typography.fontSize.lg,
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.background.tertiary,
+  },
+  backButton: {
+    padding: theme.spacing.sm,
+    marginRight: theme.spacing.sm,
   },
   title: {
     fontSize: theme.typography.fontSize.xxxl,

@@ -18,6 +18,7 @@
 ## 2. 功能范围（基础版）
 
 ### 包含功能
+
 - 密码条目管理：创建、查看、编辑、删除（软删除）
 - 条目字段：自定义名称、用户名、密码、网址（可选）、备注（可选）
 - 分类管理：自定义分类（名称、emoji 图标、颜色）
@@ -29,6 +30,7 @@
 - 导入 / 导出（加密 JSON 格式，详见第 6 节）
 
 ### 不包含功能
+
 - TOTP 两步验证
 - 文件附件
 - 密码健康检查
@@ -64,14 +66,14 @@
 
 ### 核心组件及边界
 
-| 组件 | 职责 | 接口 | 技术 |
-|------|------|------|------|
-| Crypto 层 | 密钥派生（PBKDF2）、提供 SQLCipher 所需的原始密钥字节 | `deriveKey(password, salt) → Uint8List` | `pointycastle` |
-| Vault 层 | 接收来自 Crypto 层的密钥字节，用其初始化 SQLCipher，执行 Entry/Category CRUD | `open(keyBytes)`, `getEntries()`, `upsertEntry()` 等 | `sqflite_sqlcipher` |
-| Auth 层 | 主密码验证、生物识别、将密钥存入/取出系统安全区域 | `unlock(password)`, `unlockWithBiometric()`, `storeKey(keyBytes)`, `loadKey()` | `local_auth`, Keystore/Keychain |
-| Sync Server | 局域网 HTTP 服务（Mac 专属），mDNS 广播，处理同步请求 | HTTP endpoints（见第 6 节） | `shelf`, `shelf_router`, `multicast_dns` |
-| Sync Client | mDNS 发现 Mac，触发双向增量同步（Android 专属） | `sync(sinceTs) → void` | `multicast_dns`, `http` |
-| UI 层 | 跨平台界面，通过 Riverpod 访问 Vault 层 | — | Flutter Widgets, `go_router`, `riverpod` |
+| 组件        | 职责                                                                         | 接口                                                                           | 技术                                     |
+| ----------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ---------------------------------------- |
+| Crypto 层   | 密钥派生（PBKDF2）、提供 SQLCipher 所需的原始密钥字节                        | `deriveKey(password, salt) → Uint8List`                                        | `pointycastle`                           |
+| Vault 层    | 接收来自 Crypto 层的密钥字节，用其初始化 SQLCipher，执行 Entry/Category CRUD | `open(keyBytes)`, `getEntries()`, `upsertEntry()` 等                           | `sqflite_sqlcipher`                      |
+| Auth 层     | 主密码验证、生物识别、将密钥存入/取出系统安全区域                            | `unlock(password)`, `unlockWithBiometric()`, `storeKey(keyBytes)`, `loadKey()` | `local_auth`, Keystore/Keychain          |
+| Sync Server | 局域网 HTTP 服务（Mac 专属），mDNS 广播，处理同步请求                        | HTTP endpoints（见第 6 节）                                                    | `shelf`, `shelf_router`, `multicast_dns` |
+| Sync Client | mDNS 发现 Mac，触发双向增量同步（Android 专属）                              | `sync(sinceTs) → void`                                                         | `multicast_dns`, `http`                  |
+| UI 层       | 跨平台界面，通过 Riverpod 访问 Vault 层                                      | —                                                                              | Flutter Widgets, `go_router`, `riverpod` |
 
 **层间数据流：**
 
@@ -213,6 +215,13 @@ Android                              Mac (HTTP Server, port 47200)
 
 **同步触发方式：** Android 打开 app 时自动同步一次；设置页提供手动同步按钮；Mac 不主动推送（Android 是唯一发起方）。
 
+**冲突解决规则：**
+
+- **编辑-编辑冲突**：两端都修改了同一条目，以 `updatedAt` 较大者为准（last-write-wins）
+- **编辑-删除冲突**：任一端的 `deletedAt` 非 null，则删除优先，忽略另一端的编辑（见第 5 节）
+
+**Android 时钟偏差说明：** POST /sync 阶段以 `lastSyncTs`（Mac 服务端时间）为基准筛选 Android 本地变更，而 Android 条目的 `updatedAt` 基于 Android 自身时钟。两端时钟基本同步时行为正确；极端时钟偏差场景不在支持范围内（个人使用可接受）。
+
 **Token 验证失败：** 服务端返回 HTTP 401，客户端显示"同步鉴权失败，请确认两端使用相同主密码"。
 
 ---
@@ -227,7 +236,7 @@ Android                              Mac (HTTP Server, port 47200)
 {
   "version": 1,
   "salt": "<base64-encoded PBKDF2 salt>",
-  "iv":   "<base64-encoded AES-GCM nonce>",
+  "iv": "<base64-encoded AES-GCM nonce>",
   "data": "<base64-encoded encrypted JSON payload>"
 }
 ```
@@ -236,8 +245,12 @@ Android                              Mac (HTTP Server, port 47200)
 
 ```json
 {
-  "entries":    [ /* Entry 对象数组，含所有字段 */ ],
-  "categories": [ /* Category 对象数组 */ ]
+  "entries": [
+    /* Entry 对象数组，含所有字段 */
+  ],
+  "categories": [
+    /* Category 对象数组 */
+  ]
 }
 ```
 
@@ -308,17 +321,17 @@ Android                              Mac (HTTP Server, port 47200)
 
 ## 10. 技术依赖（Flutter 包）
 
-| 功能 | 选定包 |
-|------|--------|
-| 加密数据库 | `sqflite_sqlcipher` |
-| 生物识别 | `local_auth` |
-| HTTP 服务（Mac）| `shelf` + `shelf_router` |
-| mDNS 发现 | `multicast_dns` |
-| 状态管理 | `riverpod` |
-| 路由 | `go_router` |
-| UUID | `uuid` |
-| 密码学（PBKDF2/HMAC）| `pointycastle` |
-| HTTP 客户端 | `http` |
+| 功能                  | 选定包                   |
+| --------------------- | ------------------------ |
+| 加密数据库            | `sqflite_sqlcipher`      |
+| 生物识别              | `local_auth`             |
+| HTTP 服务（Mac）      | `shelf` + `shelf_router` |
+| mDNS 发现             | `multicast_dns`          |
+| 状态管理              | `riverpod`               |
+| 路由                  | `go_router`              |
+| UUID                  | `uuid`                   |
+| 密码学（PBKDF2/HMAC） | `pointycastle`           |
+| HTTP 客户端           | `http`                   |
 
 ---
 
