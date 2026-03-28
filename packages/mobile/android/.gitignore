@@ -19,6 +19,3 @@ keystore.properties
 *.aab
 *.ap_
 *.dex
-
-# Gradle wrapper (downloaded automatically)
-gradle/wrapper/gradle-wrapper.jar
