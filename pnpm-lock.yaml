@@ -53,6 +53,9 @@ importers:
 
   packages/desktop:
     dependencies:
+      '@babel/runtime':
+        specifier: ^7.29.2
+        version: 7.29.2
       '@onepass/vault-core':
         specifier: workspace:*
         version: link:../vault-core
@@ -93,9 +96,6 @@ importers:
       '@babel/preset-env':
         specifier: ^7.25.3
         version: 7.29.2(@babel/core@7.29.0)
-      '@babel/runtime':
-        specifier: ^7.29.2
-        version: 7.29.2
       '@react-native-community/cli':
         specifier: 15.0.1
         version: 15.0.1(typescript@5.9.3)
@@ -168,6 +168,12 @@ importers:
       '@babel/runtime':
         specifier: ^7.25.0
         version: 7.29.2
+      '@noble/ciphers':
+        specifier: ^2.1.1
+        version: 2.1.1
+      '@noble/hashes':
+        specifier: ^2.0.1
+        version: 2.0.1
       '@onepass/vault-core':
         specifier: workspace:^
         version: link:../vault-core
@@ -186,9 +192,6 @@ importers:
       '@react-navigation/native-stack':
         specifier: ^7.14.8
         version: 7.14.8(@react-navigation/native@7.2.0)(react-native-safe-area-context@5.7.0)(react-native-screens@4.4.0)(react-native@0.75.4)(react@18.3.1)
-      '@types/react-native-vector-icons':
-        specifier: ^6.4.18
-        version: 6.4.18
       axios:
         specifier: ^1.13.6
         version: 1.13.6
@@ -219,9 +222,6 @@ importers:
       react-native-screens:
         specifier: ^4.4.0
         version: 4.4.0(react-native@0.75.4)(react@18.3.1)
-      react-native-vector-icons:
-        specifier: ^10.3.0
-        version: 10.3.0
       stream-browserify:
         specifier: ^3.0.0
         version: 3.0.0
@@ -2009,10 +2009,20 @@ packages:
       eslint-scope: 5.1.1
     dev: true
 
+  /@noble/ciphers@2.1.1:
+    resolution: {integrity: sha512-bysYuiVfhxNJuldNXlFEitTVdNnYUc+XNJZd7Qm2a5j1vZHgY+fazadNFWFaMK/2vye0JVlxV3gHmC0WDfAOQw==}
+    engines: {node: '>= 20.19.0'}
+    dev: false
+
   /@noble/hashes@1.8.0:
     resolution: {integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==}
     engines: {node: ^14.21.3 || >=16}
     dev: true
+
+  /@noble/hashes@2.0.1:
+    resolution: {integrity: sha512-XlOlEbQcE9fmuXxrVTXCTlG2nlRXa9Rj3rr5Ue/+tX+nmkgbX720YHh0VR3hBF9xDvwnb8D2shVGOwNx+ulArw==}
+    engines: {node: '>= 20.19.0'}
+    dev: false
 
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
