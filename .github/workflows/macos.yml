@@ -21,6 +21,9 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -29,19 +32,27 @@ jobs:
           working-directory: packages/desktop
 
       - name: Install dependencies
-        run: |
-          # Use yarn to avoid pnpm symlink issues with CocoaPods
-          corepack enable
-          corepack prepare yarn@stable --activate
-          yarn set version stable
-          yarn install
+        run: pnpm install
 
       - name: Build vault-core
-        run: yarn build:release
+        run: pnpm run build:release
 
-      - name: Install CocoaPods dependencies
+      - name: Fix symlinks and Install CocoaPods dependencies
         working-directory: packages/desktop/macos
         run: |
+          # Remove all symlinks in node_modules and copy actual content
+          # This fixes the CocoaPods "pathname contains null byte" issue with pnpm
+          cd ../../..
+          find node_modules -type l -print0 | while IFS= read -r -d '' link; do
+            if [ -L "$link" ]; then
+              target=$(readlink "$link")
+              if [ -e "$target" ]; then
+                rm -f "$link"
+                cp -r "$target" "$link"
+              fi
+            fi
+          done || true
+          cd packages/desktop/macos
           rm -rf Pods Podfile.lock
           pod install --repo-update
 
