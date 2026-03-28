@@ -53,14 +53,12 @@ jobs:
       - name: Build vault-core
         run: pnpm run build:release
 
-      - name: Verify node_modules
+      - name: Generate debug keystore
+        working-directory: packages/mobile/android/app
         run: |
-          echo "Checking node_modules structure..."
-          ls -la packages/mobile/node_modules/@react-native/ || echo "Directory not found"
-          ls -la packages/mobile/node_modules/@react-native/gradle-plugin/ || echo "gradle-plugin not found"
-          echo "---"
-          echo "Checking root node_modules..."
-          ls -la node_modules/@react-native/ || echo "Root @react-native not found"
+          if [ ! -f debug.keystore ]; then
+            keytool -genkeypair -v -storetype PKCS12 -keystore debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+          fi
 
       - name: Build Android APK
         working-directory: packages/mobile
