@@ -8,10 +8,12 @@
     },
     "ghcr.io/devcontainers/features/android:1": {}
   },
-  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y neovim tmux ripgrep fd-find && npm install -g opencode-ai && pnpm install",
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y neovim tmux ripgrep fd-find fonts-wqy-zenhei fonts-wqy-microhei language-pack-zh-hans && npm install -g opencode-ai && pnpm install",
   "forwardPorts": [8081, 47200],
   "remoteEnv": {
-    "EDITOR": "nvim"
+    "EDITOR": "nvim",
+    "LANG": "zh_CN.UTF-8",
+    "LC_ALL": "zh_CN.UTF-8"
   },
   "remoteUser": "vscode",
   "mounts": [

@@ -22,6 +22,14 @@
   "dependencies": {
     "sql.js": "^1.10.3"
   },
+  "peerDependencies": {
+    "react-native-quick-sqlite": "^8.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react-native-quick-sqlite": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.24",

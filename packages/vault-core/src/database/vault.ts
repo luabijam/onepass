@@ -1,6 +1,6 @@
-import initSqlJs, { Database, SqlJsStatic, QueryExecResult } from 'sql.js';
 import type { Entry, Category } from '../models/index.js';
 import { createDefaultCategory } from '../models/index.js';
+import type { DatabaseAdapter, QueryResult } from './types.js';
 
 const SCHEMA_VERSION = 1;
 
@@ -93,7 +93,7 @@ function rowToCategory(row: Record<string, unknown>): Category {
   };
 }
 
-function parseRows<T>(result: QueryExecResult[], mapper: (row: Record<string, unknown>) => T): T[] {
+function parseRows<T>(result: QueryResult[], mapper: (row: Record<string, unknown>) => T): T[] {
   if (result.length === 0) return [];
   const columns = result[0].columns;
   return result[0].values.map((row) => {
@@ -106,42 +106,26 @@ function parseRows<T>(result: QueryExecResult[], mapper: (row: Record<string, un
 }
 
 export class VaultService {
-  private db: Database | null = null;
-  private sql: SqlJsStatic | null = null;
+  private db: DatabaseAdapter | null = null;
 
   get isOpen(): boolean {
     return this.db !== null;
   }
 
-  async open(keyBytes: Buffer, dbPath?: string): Promise<void> {
+  async open(db: DatabaseAdapter, dbPath?: string): Promise<void> {
     if (this.db) {
       await this.close();
     }
-
-    this.sql = await initSqlJs();
-
-    if (dbPath) {
-      try {
-        const fs = await import('fs');
-        const fileBuffer = fs.readFileSync(dbPath);
-        this.db = new this.sql.Database(fileBuffer);
-      } catch {
-        this.db = new this.sql.Database();
-      }
-    } else {
-      this.db = new this.sql.Database();
-    }
-
+    this.db = db;
+    await this.db.open(dbPath);
     this.initializeSchema();
-    void keyBytes;
   }
 
   async close(): Promise<void> {
     if (this.db) {
-      this.db.close();
+      await this.db.close();
       this.db = null;
     }
-    this.sql = null;
   }
 
   private initializeSchema(): void {
@@ -152,10 +136,8 @@ export class VaultService {
     this.db.run(CREATE_ENTRIES_UPDATED_AT_INDEX);
     this.db.run(CREATE_CATEGORIES_UPDATED_AT_INDEX);
 
-    const result = this.db.exec(
-      "SELECT name FROM sqlite_master WHERE type='table' AND name='schema_version'"
-    );
-    if (result.length === 0) {
+    const tables = this.db.getTables();
+    if (!tables.includes('schema_version')) {
       this.db.run('CREATE TABLE schema_version (version INTEGER PRIMARY KEY)');
       this.db.run('INSERT INTO schema_version (version) VALUES (?)', [SCHEMA_VERSION]);
 
@@ -270,10 +252,5 @@ export class VaultService {
       since.toISOString(),
     ]);
     return parseRows(result, rowToCategory);
-  }
-
-  exportData(): Uint8Array | null {
-    if (!this.db) throw new Error('Database not open');
-    return this.db.export();
   }
 }
