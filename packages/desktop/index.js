@@ -1,6 +1,3 @@
-// Polyfill for Node.js crypto module in React Native
-import 'react-native-quick-crypto';
-
 import {AppRegistry} from 'react-native';
 import App from './src/App';
 import {name as appName} from './app.json';
