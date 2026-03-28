@@ -1,6 +1,9 @@
 require_relative '../node_modules/react-native-macos/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
+# Fix for pnpm monorepo - prevent null byte in path
+$PNPM_STORE_PATH = nil
+
 prepare_react_native_project!
 
 target 'desktop-macOS' do
@@ -20,5 +23,16 @@ target 'desktop-macOS' do
 
   post_install do |installer|
     react_native_post_install(installer)
+    
+    # Fix for pnpm monorepo null byte issue
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings.each do |key, value|
+          if value.is_a?(String) && value.include?("\0")
+            config.build_settings[key] = value.gsub("\0", '')
+          end
+        end
+      end
+    end
   end
 end
