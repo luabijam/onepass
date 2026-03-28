@@ -1,9 +1,5 @@
-# Use root node_modules for pnpm workspace compatibility
-require_relative '../../../node_modules/react-native-macos/scripts/react_native_pods'
-require_relative '../../../node_modules/@react-native-community/cli-platform-ios/native_modules'
-
-# Fix for pnpm monorepo - prevent null byte in path
-$PNPM_STORE_PATH = nil
+require_relative '../node_modules/react-native-macos/scripts/react_native_pods'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 prepare_react_native_project!
 
@@ -15,7 +11,7 @@ target 'desktop-macOS' do
   flags = get_default_flags()
 
   use_react_native!(
-    :path => '../../../node_modules/react-native-macos',
+    :path => '../node_modules/react-native-macos',
     :hermes_enabled => false,
     :fabric_enabled => ENV['RCT_NEW_ARCH_ENABLED'] == '1',
     # An absolute path to your application root.
@@ -24,16 +20,5 @@ target 'desktop-macOS' do
 
   post_install do |installer|
     react_native_post_install(installer)
-    
-    # Fix for pnpm monorepo null byte issue
-    installer.pods_project.targets.each do |target|
-      target.build_configurations.each do |config|
-        config.build_settings.each do |key, value|
-          if value.is_a?(String) && value.include?("\0")
-            config.build_settings[key] = value.gsub("\0", '')
-          end
-        end
-      end
-    end
   end
 end

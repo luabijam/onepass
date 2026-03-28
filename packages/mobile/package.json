@@ -20,7 +20,7 @@
     "@babel/runtime": "^7.25.0",
     "@noble/ciphers": "^2.1.1",
     "@noble/hashes": "^2.0.1",
-    "@onepass/vault-core": "workspace:^",
+    "@onepass/vault-core": "*",
     "@react-native-async-storage/async-storage": "^1.24.0",
     "@react-native-clipboard/clipboard": "^1.16.3",
     "@react-native/codegen": "^0.84.1",

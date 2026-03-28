@@ -20,9 +20,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+          cache: 'npm'
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -32,10 +30,10 @@ jobs:
           working-directory: packages/desktop
 
       - name: Install dependencies
-        run: pnpm install
+        run: npm ci
 
       - name: Build vault-core
-        run: pnpm run build:release
+        run: npm run build:release
 
       - name: Install CocoaPods dependencies
         working-directory: packages/desktop/macos
@@ -44,7 +42,7 @@ jobs:
           pod install --repo-update
 
       - name: Build macOS app
-        run: pnpm run build:macos:release
+        run: npm run build:macos:release
 
       - name: Create DMG (optional)
         run: |

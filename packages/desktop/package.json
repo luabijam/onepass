@@ -9,7 +9,7 @@
     "macos:release": "cd macos && xcodebuild -workspace desktop.xcworkspace -scheme desktop-macOS -configuration Release -derivedDataPath build",
     "macos:sign": "../../scripts/build-signed.sh",
     "macos:notarize": "../../scripts/notarize.sh macos/build/Build/Products/Release/OnePass.app",
-    "macos:distribute": "pnpm run macos:sign && pnpm run macos:notarize",
+    "macos:distribute": "npm run macos:sign && npm run macos:notarize",
     "macos:clean": "rm -rf macos/build",
     "macos:pod": "cd macos && pod install",
     "start": "react-native start",
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.29.2",
-    "@onepass/vault-core": "workspace:*",
+    "@onepass/vault-core": "*",
     "@types/react-native-vector-icons": "^6.4.18",
     "better-sqlite3": "^12.8.0",
     "bonjour-service": "^1.3.0",

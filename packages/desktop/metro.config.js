@@ -1,25 +1,14 @@
-const path = require('path');
 const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
 
 /**
- * Metro configuration for pnpm monorepo
+ * Metro configuration
  * https://reactnative.dev/docs/metro
  *
  * @type {import('metro-config').MetroConfig}
  */
 const config = {
-  watchFolders: [
-    // Include root node_modules for pnpm monorepo
-    path.resolve(__dirname, '../../node_modules'),
-    // Include workspace packages
-    path.resolve(__dirname, '../vault-core'),
-  ],
   resolver: {
-    nodeModulesPaths: [
-      path.resolve(__dirname, '../../node_modules'),
-    ],
     extraNodeModules: {
-      '@onepass/vault-core': path.resolve(__dirname, '../vault-core'),
       // Polyfills for Node.js core modules in React Native
       crypto: require.resolve('react-native-crypto'),
       stream: require.resolve('stream-browserify'),
