@@ -30,8 +30,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          # Use yarn instead of pnpm to avoid symlink issues with CocoaPods
-          npm install -g yarn
+          # Use yarn to avoid pnpm symlink issues with CocoaPods
+          corepack enable
+          corepack prepare yarn@stable --activate
+          yarn set version stable
           yarn install
 
       - name: Build vault-core
