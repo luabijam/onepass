@@ -3,7 +3,7 @@ import type { VaultService } from '../database/vault.js';
 import type { Entry, Category } from '../models/index.js';
 
 export class ExportService {
-  async exportVault(vault: VaultService, key: Buffer, salt: Buffer): Promise<Buffer> {
+  async exportVault(vault: VaultService, key: Uint8Array, salt: Uint8Array): Promise<Uint8Array> {
     const entries = await vault.getEntries({ includeDeleted: true });
     const categories = await vault.getCategories({ includeDeleted: true });
     return exportVaultData(entries, categories, key, salt);
@@ -11,9 +11,9 @@ export class ExportService {
 
   async importVault(
     _vault: VaultService,
-    fileBytes: Buffer,
-    key: Buffer
-  ): Promise<{ entries: Entry[]; categories: Category[]; salt: Buffer }> {
+    fileBytes: Uint8Array,
+    key: Uint8Array
+  ): Promise<{ entries: Entry[]; categories: Category[]; salt: Uint8Array }> {
     return importVaultData(fileBytes, key);
   }
 }
