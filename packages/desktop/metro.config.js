@@ -23,6 +23,8 @@ const config = {
       crypto: require.resolve('react-native-crypto'),
       stream: require.resolve('stream-browserify'),
       vm: require.resolve('vm-browserify'),
+      path: require.resolve('path-browserify'),
+      os: require.resolve('os-browserify/browser'),
     },
   },
 };

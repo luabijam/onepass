@@ -8,7 +8,7 @@ import {
   base64ToUint8Array,
   combineCiphertextAndTag,
   splitCiphertextAndTag,
-} from './NodeCrypto';
+} from './RnCrypto';
 
 const EXPORT_VERSION = 1;
 
@@ -59,9 +59,10 @@ export async function exportVault(
   salt: Uint8Array,
 ): Promise<string> {
   const payload: SyncPayload = {entries, categories};
-  const plaintext = Buffer.from(serializePayload(payload), 'utf-8');
+  const encoder = new TextEncoder();
+  const plaintext = encoder.encode(serializePayload(payload));
 
-  const {ciphertext, iv, tag} = encryptAesGcm(plaintext, Buffer.from(key));
+  const {ciphertext, iv, tag} = await encryptAesGcm(plaintext, key);
   const combinedData = combineCiphertextAndTag(ciphertext, tag);
 
   const exportData: ExportData = {
@@ -88,18 +89,14 @@ export async function importVault(
   const iv = base64ToUint8Array(exportData.iv);
   const combinedData = base64ToUint8Array(exportData.data);
 
-  const key = deriveKey(password, Buffer.from(salt));
+  const key = await deriveKey(password, salt);
 
-  const {ciphertext, tag} = splitCiphertextAndTag(Buffer.from(combinedData));
+  const {ciphertext, tag} = splitCiphertextAndTag(combinedData);
 
   try {
-    const plaintext = decryptAesGcm(
-      ciphertext,
-      Buffer.from(key),
-      Buffer.from(iv),
-      tag,
-    );
-    const payload = deserializePayload(plaintext.toString('utf-8'));
+    const plaintext = await decryptAesGcm(ciphertext, key, iv, tag);
+    const decoder = new TextDecoder();
+    const payload = deserializePayload(decoder.decode(plaintext));
 
     return {
       entries: payload.entries,
@@ -117,8 +114,8 @@ export async function verifyPassword(
   storedHash: string,
 ): Promise<boolean> {
   const salt = base64ToUint8Array(saltBase64);
-  const key = deriveKey(password, Buffer.from(salt));
-  const keyHash = sha256(key);
+  const key = await deriveKey(password, salt);
+  const keyHash = await sha256(key);
   const computedHash = uint8ArrayToBase64(keyHash);
   return computedHash === storedHash;
 }
@@ -128,5 +125,5 @@ export async function deriveKeyFromPassword(
   saltBase64: string,
 ): Promise<Uint8Array> {
   const salt = base64ToUint8Array(saltBase64);
-  return new Uint8Array(deriveKey(password, Buffer.from(salt)));
+  return deriveKey(password, salt);
 }

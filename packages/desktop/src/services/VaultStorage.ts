@@ -1,6 +1,4 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import * as os from 'os';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {Entry, Category} from '@onepass/vault-core';
 import {createDefaultCategory} from '@onepass/vault-core';
 import {KeychainService} from './KeychainService';
@@ -11,13 +9,12 @@ import {
   sha256,
   uint8ArrayToBase64,
   base64ToUint8Array,
-} from './NodeCrypto';
+} from './RnCrypto';
 
-const VAULT_DIR = 'onepass';
-const ENTRIES_FILE = 'entries.json';
-const CATEGORIES_FILE = 'categories.json';
-const SALT_FILE = 'salt.json';
-const PASSWORD_HASH_KEY = 'password_hash';
+const ENTRIES_KEY = '@onepass/entries';
+const CATEGORIES_KEY = '@onepass/categories';
+const SALT_KEY = '@onepass/salt';
+const PASSWORD_HASH_KEY = '@onepass/password_hash';
 const BIOMETRIC_KEY_ID = 'biometric_key';
 
 interface UnlockResult {
@@ -32,17 +29,6 @@ interface CreateVaultResult {
   success: boolean;
   error?: string;
   salt?: Uint8Array;
-}
-
-function getVaultDir(): string {
-  return path.join(os.homedir(), VAULT_DIR);
-}
-
-function ensureVaultDir(): void {
-  const vaultDir = getVaultDir();
-  if (!fs.existsSync(vaultDir)) {
-    fs.mkdirSync(vaultDir, {recursive: true});
-  }
 }
 
 function serializeEntries(entries: Entry[]): string {
@@ -94,8 +80,8 @@ function deserializeCategories(json: string): Category[] {
 export const VaultStorage = {
   async isVaultInitialized(): Promise<boolean> {
     try {
-      const saltPath = path.join(getVaultDir(), SALT_FILE);
-      return fs.existsSync(saltPath);
+      const saltBase64 = await AsyncStorage.getItem(SALT_KEY);
+      return saltBase64 !== null;
     } catch {
       return false;
     }
@@ -103,66 +89,73 @@ export const VaultStorage = {
 
   async createVault(password: string): Promise<CreateVaultResult> {
     try {
-      ensureVaultDir();
+      console.log('[VaultStorage] Starting createVault...');
 
+      console.log('[VaultStorage] Generating salt...');
       const salt = generateSalt();
-      const key = deriveKey(password, salt);
-      const keyHash = sha256(key);
+      console.log('[VaultStorage] Salt generated');
+
+      console.log('[VaultStorage] Deriving key...');
+      const key = await deriveKey(password, salt);
+      console.log('[VaultStorage] Key derived');
+
+      console.log('[VaultStorage] Computing hash...');
+      const keyHash = await sha256(key);
       const passwordHash = uint8ArrayToBase64(keyHash);
-
-      const keychain = new KeychainService();
-      await keychain.storePassword(PASSWORD_HASH_KEY, passwordHash);
-
-      const saltPath = path.join(getVaultDir(), SALT_FILE);
-      fs.writeFileSync(
-        saltPath,
-        JSON.stringify({salt: uint8ArrayToBase64(salt)}),
-      );
+      console.log('[VaultStorage] Hash computed');
 
       const defaultCategories: Category[] = [createDefaultCategory()];
-      const categoriesPath = path.join(getVaultDir(), CATEGORIES_FILE);
-      fs.writeFileSync(categoriesPath, serializeCategories(defaultCategories));
 
-      const entriesPath = path.join(getVaultDir(), ENTRIES_FILE);
-      fs.writeFileSync(entriesPath, serializeEntries([]));
+      console.log('[VaultStorage] Saving to AsyncStorage...');
+      await Promise.all([
+        AsyncStorage.setItem(SALT_KEY, uint8ArrayToBase64(salt)),
+        AsyncStorage.setItem(PASSWORD_HASH_KEY, passwordHash),
+        AsyncStorage.setItem(
+          CATEGORIES_KEY,
+          serializeCategories(defaultCategories),
+        ),
+        AsyncStorage.setItem(ENTRIES_KEY, serializeEntries([])),
+      ]);
+      console.log('[VaultStorage] All data saved');
 
       return {success: true, salt: new Uint8Array(salt)};
-    } catch {
-      return {success: false, error: 'Failed to create vault'};
+    } catch (error) {
+      console.error('[VaultStorage] createVault error:', error);
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      console.error(
+        '[VaultStorage] Error stack:',
+        error instanceof Error ? error.stack : 'N/A',
+      );
+      return {success: false, error: `Failed to create vault: ${errorMsg}`};
     }
   },
 
   async unlock(password: string): Promise<UnlockResult> {
     try {
-      const saltPath = path.join(getVaultDir(), SALT_FILE);
-      if (!fs.existsSync(saltPath)) {
+      const [saltBase64, storedHash, entriesJson, categoriesJson] =
+        await Promise.all([
+          AsyncStorage.getItem(SALT_KEY),
+          AsyncStorage.getItem(PASSWORD_HASH_KEY),
+          AsyncStorage.getItem(ENTRIES_KEY),
+          AsyncStorage.getItem(CATEGORIES_KEY),
+        ]);
+
+      if (!saltBase64 || !storedHash) {
         return {success: false, error: 'Vault not initialized'};
       }
 
-      const keychain = new KeychainService();
-      const storedHash = await keychain.getPassword(PASSWORD_HASH_KEY);
-      if (!storedHash) {
-        return {success: false, error: 'Vault not initialized'};
-      }
-
-      const saltData = JSON.parse(fs.readFileSync(saltPath, 'utf-8'));
-      const salt = base64ToUint8Array(saltData.salt);
-      const key = deriveKey(password, Buffer.from(salt));
-      const keyHash = sha256(key);
+      const salt = base64ToUint8Array(saltBase64);
+      const key = await deriveKey(password, salt);
+      const keyHash = await sha256(key);
       const computedHash = uint8ArrayToBase64(keyHash);
 
       if (computedHash !== storedHash) {
         return {success: false, error: 'Incorrect password'};
       }
 
-      const entriesPath = path.join(getVaultDir(), ENTRIES_FILE);
-      const categoriesPath = path.join(getVaultDir(), CATEGORIES_FILE);
-
-      const entries = fs.existsSync(entriesPath)
-        ? deserializeEntries(fs.readFileSync(entriesPath, 'utf-8'))
-        : [];
-      const categories = fs.existsSync(categoriesPath)
-        ? deserializeCategories(fs.readFileSync(categoriesPath, 'utf-8'))
+      const entries = entriesJson ? deserializeEntries(entriesJson) : [];
+      const categories = categoriesJson
+        ? deserializeCategories(categoriesJson)
         : [];
 
       return {
@@ -181,48 +174,36 @@ export const VaultStorage = {
   },
 
   async saveEntries(entries: Entry[]): Promise<void> {
-    ensureVaultDir();
-    const entriesPath = path.join(getVaultDir(), ENTRIES_FILE);
-    fs.writeFileSync(entriesPath, serializeEntries(entries));
+    await AsyncStorage.setItem(ENTRIES_KEY, serializeEntries(entries));
   },
 
   async saveCategories(categories: Category[]): Promise<void> {
-    ensureVaultDir();
-    const categoriesPath = path.join(getVaultDir(), CATEGORIES_FILE);
-    fs.writeFileSync(categoriesPath, serializeCategories(categories));
+    await AsyncStorage.setItem(CATEGORIES_KEY, serializeCategories(categories));
   },
 
   async getEntries(): Promise<Entry[]> {
-    const entriesPath = path.join(getVaultDir(), ENTRIES_FILE);
-    if (!fs.existsSync(entriesPath)) {
-      return [];
-    }
-    return deserializeEntries(fs.readFileSync(entriesPath, 'utf-8'));
+    const json = await AsyncStorage.getItem(ENTRIES_KEY);
+    return json ? deserializeEntries(json) : [];
   },
 
   async getCategories(): Promise<Category[]> {
-    const categoriesPath = path.join(getVaultDir(), CATEGORIES_FILE);
-    if (!fs.existsSync(categoriesPath)) {
-      return [createDefaultCategory()];
-    }
-    return deserializeCategories(fs.readFileSync(categoriesPath, 'utf-8'));
+    const json = await AsyncStorage.getItem(CATEGORIES_KEY);
+    return json ? deserializeCategories(json) : [createDefaultCategory()];
   },
 
   async getSalt(): Promise<Uint8Array | null> {
-    const saltPath = path.join(getVaultDir(), SALT_FILE);
-    if (!fs.existsSync(saltPath)) {
-      return null;
-    }
-    const saltData = JSON.parse(fs.readFileSync(saltPath, 'utf-8'));
-    return base64ToUint8Array(saltData.salt);
+    const saltBase64 = await AsyncStorage.getItem(SALT_KEY);
+    if (!saltBase64) return null;
+    return base64ToUint8Array(saltBase64);
   },
 
   async enableBiometrics(password: string): Promise<boolean> {
     try {
-      const salt = await this.getSalt();
-      if (!salt) return false;
+      const saltBase64 = await AsyncStorage.getItem(SALT_KEY);
+      if (!saltBase64) return false;
 
-      const key = deriveKey(password, Buffer.from(salt));
+      const salt = base64ToUint8Array(saltBase64);
+      const key = await deriveKey(password, salt);
 
       const biometrics = new BiometricsService();
       const hasKey = await biometrics.hasBiometricKey();
@@ -258,21 +239,15 @@ export const VaultStorage = {
         return {success: false, error: 'Biometric key not found'};
       }
 
-      const entriesPath = path.join(getVaultDir(), ENTRIES_FILE);
-      const categoriesPath = path.join(getVaultDir(), CATEGORIES_FILE);
-      const saltPath = path.join(getVaultDir(), SALT_FILE);
+      const entriesJson = await AsyncStorage.getItem(ENTRIES_KEY);
+      const categoriesJson = await AsyncStorage.getItem(CATEGORIES_KEY);
+      const saltBase64 = await AsyncStorage.getItem(SALT_KEY);
 
-      const entries = fs.existsSync(entriesPath)
-        ? deserializeEntries(fs.readFileSync(entriesPath, 'utf-8'))
+      const entries = entriesJson ? deserializeEntries(entriesJson) : [];
+      const categories = categoriesJson
+        ? deserializeCategories(categoriesJson)
         : [];
-      const categories = fs.existsSync(categoriesPath)
-        ? deserializeCategories(fs.readFileSync(categoriesPath, 'utf-8'))
-        : [];
-      const salt = fs.existsSync(saltPath)
-        ? base64ToUint8Array(
-            JSON.parse(fs.readFileSync(saltPath, 'utf-8')).salt,
-          )
-        : null;
+      const salt = saltBase64 ? base64ToUint8Array(saltBase64) : null;
 
       return {
         success: true,
@@ -304,17 +279,11 @@ export const VaultStorage = {
   },
 
   async clearVault(): Promise<void> {
-    const vaultDir = getVaultDir();
-    const entriesPath = path.join(vaultDir, ENTRIES_FILE);
-    const categoriesPath = path.join(vaultDir, CATEGORIES_FILE);
-    const saltPath = path.join(vaultDir, SALT_FILE);
-
-    if (fs.existsSync(entriesPath)) fs.unlinkSync(entriesPath);
-    if (fs.existsSync(categoriesPath)) fs.unlinkSync(categoriesPath);
-    if (fs.existsSync(saltPath)) fs.unlinkSync(saltPath);
-
+    await AsyncStorage.removeItem(ENTRIES_KEY);
+    await AsyncStorage.removeItem(CATEGORIES_KEY);
+    await AsyncStorage.removeItem(SALT_KEY);
+    await AsyncStorage.removeItem(PASSWORD_HASH_KEY);
     const keychain = new KeychainService();
-    await keychain.deletePassword(PASSWORD_HASH_KEY);
     await keychain.deletePassword(BIOMETRIC_KEY_ID);
     await keychain.deleteToken('sync_token');
   },

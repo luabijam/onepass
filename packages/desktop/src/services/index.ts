@@ -11,4 +11,4 @@ export {
   deriveKeyFromPassword,
 } from './VaultExport';
 export type {ExportData} from './VaultExport';
-export * from './NodeCrypto';
+export * from './RnCrypto';
