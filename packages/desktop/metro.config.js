@@ -7,12 +7,17 @@ const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
  *
  * @type {import('metro-config').MetroConfig}
  */
+const projectRoot = __dirname;
+const workspaceRoot = path.resolve(projectRoot, '../..');
+
 const config = {
-  watchFolders: [
-    // Include root node_modules for npm workspaces
-    path.resolve(__dirname, '../../node_modules'),
-  ],
+  // Watch all files in the workspace root (including vault-core package)
+  watchFolders: [workspaceRoot],
   resolver: {
+    nodeModulesPaths: [
+      path.resolve(projectRoot, 'node_modules'),
+      path.resolve(workspaceRoot, 'node_modules'),
+    ],
     extraNodeModules: {
       // Polyfills for Node.js core modules in React Native
       crypto: require.resolve('react-native-crypto'),
