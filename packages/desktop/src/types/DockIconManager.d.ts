@@ -19,7 +19,35 @@ declare module 'react-native' {
     cancelBounce(): void;
   }
 
+  interface LogFileWriterInterface {
+    writeLog(logLine: string): Promise<void>;
+    getLogFilePath(): Promise<string>;
+    clearLogFile(): Promise<void>;
+    getLogFileSize(): Promise<number>;
+    rotateLogIfNeeded(maxSizeMB: number): Promise<boolean>;
+    readLastLines(linesCount: number): Promise<string>;
+  }
+
   interface NativeModulesStatic {
     DockIconManager?: DockIconManagerInterface;
+    LogFileWriter?: LogFileWriterInterface;
   }
+
+  // Export Platform and NativeModules for use in TypeScript
+  export const Platform: {
+    OS: string;
+    Version: string | number;
+    isPad: boolean;
+    isTV: boolean;
+    select<T>(specifics: {
+      ios?: T;
+      android?: T;
+      macos?: T;
+      windows?: T;
+      web?: T;
+      default: T;
+    }): T;
+  };
+
+  export const NativeModules: NativeModulesStatic;
 }

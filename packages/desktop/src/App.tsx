@@ -7,6 +7,7 @@ import {
   EntryDetailPanel,
 } from './components';
 import {useVaultStore} from './stores';
+import {initLogger, setupErrorHandling, logger} from './utils/Logger';
 import type {Entry, Category} from '@onepass/vault-core';
 
 function App(): React.JSX.Element {
@@ -23,6 +24,20 @@ function App(): React.JSX.Element {
     null,
   );
   const [selectedEntryId, setSelectedEntryId] = useState<string | null>(null);
+
+  // Initialize logger on first mount
+  useEffect(() => {
+    setupErrorHandling();
+    initLogger()
+      .then(path => {
+        if (path) {
+          logger.info('App', `Logger initialized, log file: ${path}`);
+        }
+      })
+      .catch(err => {
+        console.error('Failed to initialize logger:', err);
+      });
+  }, []);
 
   useEffect(() => {
     initialize();
