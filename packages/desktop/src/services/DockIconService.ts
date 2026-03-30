@@ -12,7 +12,8 @@ export interface DockState {
   hasUnreadNotifications: boolean;
 }
 
-const {DockIconManager} = NativeModules;
+// Safely get the native module - it may not exist on all platforms
+const DockIconManager = NativeModules.DockIconManager;
 
 function getIsMacOS(): boolean {
   return Platform.OS === 'macos';
@@ -20,51 +21,51 @@ function getIsMacOS(): boolean {
 
 export const DockIconService = {
   setLockState(isLocked: boolean): void {
-    if (!getIsMacOS()) {
+    if (!getIsMacOS() || !DockIconManager) {
       return;
     }
 
-    if (DockIconManager?.setLockState) {
+    if (DockIconManager.setLockState) {
       DockIconManager.setLockState(isLocked);
     }
   },
 
   setBadge(count: number): void {
-    if (!getIsMacOS()) {
+    if (!getIsMacOS() || !DockIconManager) {
       return;
     }
 
-    if (DockIconManager?.setBadge) {
+    if (DockIconManager.setBadge) {
       DockIconManager.setBadge(count);
     }
   },
 
   clearBadge(): void {
-    if (!getIsMacOS()) {
+    if (!getIsMacOS() || !DockIconManager) {
       return;
     }
 
-    if (DockIconManager?.clearBadge) {
+    if (DockIconManager.clearBadge) {
       DockIconManager.clearBadge();
     }
   },
 
   setDockMenu(items: DockMenuItem[]): void {
-    if (!getIsMacOS()) {
+    if (!getIsMacOS() || !DockIconManager) {
       return;
     }
 
-    if (DockIconManager?.setDockMenu) {
+    if (DockIconManager.setDockMenu) {
       DockIconManager.setDockMenu(items);
     }
   },
 
   onDockMenuItemSelected(callback: (itemId: string) => void): () => void {
-    if (!getIsMacOS()) {
+    if (!getIsMacOS() || !DockIconManager) {
       return () => {};
     }
 
-    if (DockIconManager?.onDockMenuItemSelected) {
+    if (DockIconManager.onDockMenuItemSelected) {
       const subscription = DockIconManager.onDockMenuItemSelected(callback);
       return () => {
         if (subscription?.remove) {
@@ -77,31 +78,31 @@ export const DockIconService = {
   },
 
   bounce(): void {
-    if (!getIsMacOS()) {
+    if (!getIsMacOS() || !DockIconManager) {
       return;
     }
 
-    if (DockIconManager?.bounce) {
+    if (DockIconManager.bounce) {
       DockIconManager.bounce();
     }
   },
 
   bounceCritical(): void {
-    if (!getIsMacOS()) {
+    if (!getIsMacOS() || !DockIconManager) {
       return;
     }
 
-    if (DockIconManager?.bounceCritical) {
+    if (DockIconManager.bounceCritical) {
       DockIconManager.bounceCritical();
     }
   },
 
   cancelBounce(): void {
-    if (!getIsMacOS()) {
+    if (!getIsMacOS() || !DockIconManager) {
       return;
     }
 
-    if (DockIconManager?.cancelBounce) {
+    if (DockIconManager.cancelBounce) {
       DockIconManager.cancelBounce();
     }
   },

@@ -11,17 +11,17 @@ interface BiometricsModuleInterface {
   getBiometryType(): Promise<string | null>;
 }
 
-const {BiometricsModule} = NativeModules;
-
-const biometricsModule: BiometricsModuleInterface = BiometricsModule;
+// Safely get the native module - it may not exist on all platforms
+const BiometricsModule: BiometricsModuleInterface | undefined =
+  NativeModules.BiometricsModule;
 
 export class BiometricsService {
   async isAvailable(): Promise<boolean> {
     try {
-      if (Platform.OS !== 'macos') {
+      if (Platform.OS !== 'macos' || !BiometricsModule) {
         return false;
       }
-      const result = await biometricsModule.canAuthenticate();
+      const result = await BiometricsModule.canAuthenticate();
       return result;
     } catch {
       return false;
@@ -30,10 +30,10 @@ export class BiometricsService {
 
   async getBiometryType(): Promise<BiometryType> {
     try {
-      if (Platform.OS !== 'macos') {
+      if (Platform.OS !== 'macos' || !BiometricsModule) {
         return null;
       }
-      const biometryType = await biometricsModule.getBiometryType();
+      const biometryType = await BiometricsModule.getBiometryType();
       if (!biometryType) {
         return null;
       }
@@ -50,10 +50,10 @@ export class BiometricsService {
     promptMessage = 'Authenticate to unlock OnePass',
   ): Promise<boolean> {
     try {
-      if (Platform.OS !== 'macos') {
+      if (Platform.OS !== 'macos' || !BiometricsModule) {
         return false;
       }
-      const result = await biometricsModule.authenticate({
+      const result = await BiometricsModule.authenticate({
         promptMessage,
         cancelButtonText: 'Use Password',
       });
